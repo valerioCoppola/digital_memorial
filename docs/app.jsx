@@ -8,39 +8,52 @@ const { useState, useEffect, useRef, useMemo, useCallback } = React;
 
 const DATA_BASE_URL = "./data"; // Percorso ai file generati da build_index.py
 
-const CATEGORY_META = {
-  consigli: { icon: "🎬", color: "#e8a946" },
-  monografie: { icon: "🎭", color: "#c45c4a" },
-  recensioni: { icon: "⭐", color: "#6aaa64" },
-  recensioni_annuali: { icon: "🏆", color: "#d4a853" },
-  musicali: { icon: "🎵", color: "#8b6cc1" },
-  reboot: { icon: "🔄", color: "#4a90c4" },
-  speciali: { icon: "🌟", color: "#d4a853" },
-  scifi: { icon: "🚀", color: "#5bb5a2" },
-  worst: { icon: "💀", color: "#8a4a4a" },
-  classifiche: { icon: "📋", color: "#e8a946" },
-  interviste: { icon: "🎤", color: "#c49a6c" },
-  criticoni: { icon: "🎪", color: "#c45c4a" },
-  live: { icon: "🔴", color: "#e05555" },
-  altro: { icon: "📽️", color: "#888" },
-};
+// Palette "site-like" (oro → ruggine → verdi/blu/viola)
+const PALETTE = [
+  "#e8a946", // gold
+  "#c45c4a", // rust
+  "#6aaa64", // green
+  "#4a90c4", // blue
+  "#8b6cc1", // purple
+  "#5bb5a2", // teal
+  "#8a4a4a", // dark red
+  "#d4a853", // warm gold
+  "#c49a6c", // sand
+];
 
-const GENRE_COLORS = {
-  Horror: "#c45c4a",
-  "Sci-Fi": "#5bb5a2",
-  Auteur: "#e8a946",
-  Italian: "#8b6cc1",
-  Giallo: "#d4a853",
-  Cult: "#6aaa64",
-  Crime: "#8a4a4a",
-  Comedy: "#e8c846",
-  Fantasy: "#6a8cc1",
-  Action: "#c47a4a",
-  Indie: "#7aaa84",
-  Adventure: "#4a90c4",
-  Surrealism: "#c46a8a",
-  "B-Movie / Cult": "#6aaa64",
-  "Non classificato": "#555",
+function hashColor(key) {
+  const s = String(key || "");
+  let h = 2166136261; // FNV-ish
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 16777619);
+  }
+  return PALETTE[Math.abs(h) % PALETTE.length];
+}
+
+const CATEGORY_META = {
+  patreon: { icon: "💛", color: "#e8a946" },
+  al_cinema: { icon: "🎟️", color: "#4a90c4" },
+  consigli: { icon: "🎬", color: "#e8a946" },
+  consigli_brevi: { icon: "🎬", color: "#e8a946" },
+  monografie: { icon: "🎭", color: "#c45c4a" },
+  classici: { icon: "📼", color: "#d4a853" },
+  musicali: { icon: "🎵", color: "#8b6cc1" },
+  saghe: { icon: "🧩", color: "#6aaa64" },
+  oriente: { icon: "🀄", color: "#5bb5a2" },
+  letterari: { icon: "📚", color: "#d4a853" },
+  meglio_peggio: { icon: "🏆", color: "#d4a853" },
+  imperdibili: { icon: "✅", color: "#6aaa64" },
+  underground: { icon: "🕳️", color: "#8a4a4a" },
+  eventi: { icon: "📍", color: "#4a90c4" },
+  reboot: { icon: "🔄", color: "#4a90c4" },
+  con_lomuscio: { icon: "🤝", color: "#c49a6c" },
+  interviste: { icon: "🎤", color: "#c49a6c" },
+  vlog: { icon: "📹", color: "#888" },
+  quarantena: { icon: "🏠", color: "#888" },
+  scifi: { icon: "🚀", color: "#5bb5a2" },
+  speciali: { icon: "🌟", color: "#d4a853" },
+  altro: { icon: "📽️", color: "#888" },
 };
 
 const TIMELINE = [
@@ -639,35 +652,189 @@ function ArchiveSection() {
 // ============================================================
 
 function ConceptMap() {
-  const { data: directorsData, loading, error } = useJsonData("directors.json");
-  const { data: statsData } = useJsonData("stats.json");
-  const [selectedView, setSelectedView] = useState("directors");
-  const [hoveredNode, setHoveredNode] = useState(null);
+  const { data: directorsData, loading: l1, error: e1 } = useJsonData("directors.json");
+  const { data: statsData, loading: l2, error: e2 } = useJsonData("stats.json");
+  const { data: filmsData, loading: l3, error: e3 } = useJsonData("films.json");
+  const { data: indexData, loading: l4, error: e4 } = useJsonData("index.json");
 
-  const directors = directorsData?.directors || [];
+  const loading = l1 || l2 || l3 || l4;
+  const error = e1 || e2 || e3 || e4;
+
+  const [selectedView, setSelectedView] = useState("directors");
+
+  // Directors view controls
+  const [topN, setTopN] = useState(36);
+  const [genreFilter, setGenreFilter] = useState("all");
+  const [q, setQ] = useState("");
+  const [hoveredId, setHoveredId] = useState(null);
+  const [selectedDirector, setSelectedDirector] = useState(null);
+
+  // Films view controls
+  const [filmQuery, setFilmQuery] = useState("");
+  const [selectedFilm, setSelectedFilm] = useState(null);
+
+  // Normalize raw directors schema (count vs video_count)
+  const directors = useMemo(() => {
+    const raw = directorsData?.directors || [];
+    return raw
+      .map(d => ({
+        name: d.name,
+        video_count: (d.video_count ?? d.count ?? 0) * 1,
+        genres: Array.isArray(d.genres) ? d.genres : [],
+        videos: Array.isArray(d.videos) ? d.videos : [],
+      }))
+      .sort((a, b) => (b.video_count || 0) - (a.video_count || 0));
+  }, [directorsData]);
+
   const genreConnections = directorsData?.genre_connections || {};
 
-  // Generate node positions for director constellation
+  const genres = useMemo(() => {
+    const keys = Object.keys(genreConnections || {});
+    if (keys.length) {
+      return keys
+        .map(g => ({ genre: g, directors: genreConnections[g] || [] }))
+        .sort((a, b) => (b.directors.length - a.directors.length) || a.genre.localeCompare(b.genre));
+    }
+    const cnt = {};
+    directors.forEach(d => (d.genres || []).forEach(g => { cnt[g] = (cnt[g] || 0) + 1; }));
+    return Object.entries(cnt)
+      .map(([genre, c]) => ({ genre, directors: [], count: c }))
+      .sort((a, b) => (b.count - a.count) || a.genre.localeCompare(b.genre));
+  }, [directors, genreConnections]);
+
+  const genreColor = useCallback((genre) => hashColor(`genre:${genre}`), []);
+
+  // Filtered directors list
+  const shownDirectors = useMemo(() => {
+    let list = directors;
+
+    if (genreFilter !== "all") list = list.filter(d => (d.genres || []).includes(genreFilter));
+
+    const qq = (q || "").trim().toLowerCase();
+    if (qq) list = list.filter(d => String(d.name || "").toLowerCase().includes(qq));
+
+    return list.slice(0, Math.max(12, Math.min(topN, 90)));
+  }, [directors, topN, genreFilter, q]);
+
+  // Position nodes in rings; cluster by genre (first genre)
   const directorNodes = useMemo(() => {
-    const top = directors.slice(0, 24); // Show top 24
     const cx = 400, cy = 300;
-    return top.map((d, i) => {
-      const angle = (i / top.length) * Math.PI * 2 - Math.PI / 2;
-      const radius = 160 + (i % 3) * 45;
+    const perRing = 18;
+    const ringStep = 70;
+
+    const sorted = [...shownDirectors].sort((a, b) => {
+      const ga = (a.genres && a.genres[0]) ? a.genres[0] : "—";
+      const gb = (b.genres && b.genres[0]) ? b.genres[0] : "—";
+      const gcmp = ga.localeCompare(gb);
+      if (gcmp) return gcmp;
+      const ccmp = (b.video_count || 0) - (a.video_count || 0);
+      if (ccmp) return ccmp;
+      return String(a.name).localeCompare(String(b.name));
+    });
+
+    return sorted.map((d, i) => {
+      const ring = Math.floor(i / perRing);
+      const idx = i % perRing;
+      const angle = (idx / perRing) * Math.PI * 2 - Math.PI / 2;
+      const radius = 160 + ring * ringStep;
+
+      const base = 16;
+      const r = base + Math.min((d.video_count || 0), 20) * 1.8;
+
       return {
         ...d,
+        id: `dir:${d.name}`,
         x: cx + Math.cos(angle) * radius,
         y: cy + Math.sin(angle) * radius,
-        r: 18 + Math.min(d.video_count, 10) * 4,
+        r,
+        primaryGenre: (d.genres && d.genres[0]) ? d.genres[0] : null,
       };
     });
-  }, [directors]);
+  }, [shownDirectors]);
+
+  // Shared-genre links for hover (only among displayed nodes)
+  const sharedLinks = useMemo(() => {
+    const nodes = directorNodes;
+    const byGenre = {};
+    nodes.forEach(n => (n.genres || []).forEach(g => {
+      if (!byGenre[g]) byGenre[g] = [];
+      byGenre[g].push(n);
+    }));
+
+    const neigh = {};
+    nodes.forEach(a => { neigh[a.id] = {}; });
+
+    for (const g of Object.keys(byGenre)) {
+      const arr = byGenre[g];
+      for (let i = 0; i < arr.length; i++) {
+        for (let j = i + 1; j < arr.length; j++) {
+          const a = arr[i].id, b = arr[j].id;
+          neigh[a][b] = (neigh[a][b] || 0) + 1;
+          neigh[b][a] = (neigh[b][a] || 0) + 1;
+        }
+      }
+    }
+    return neigh;
+  }, [directorNodes]);
 
   const yearlyDist = statsData?.yearly_distribution || {};
   const catDist = statsData?.category_distribution || {};
+  const films = filmsData?.films || [];
+  const catalog = indexData?.catalog || [];
+
+  // ---- Helpers: film extraction & catalog search ----
+  const extractFilmKey = useCallback((title) => {
+    if (!title) return null;
+    const m = String(title).match(/[：:]\s*[＂"«“]?(.+?)[＂"»”]?\s*\((\d{4})\)/);
+    if (!m) return null;
+    const film = String(m[1] || "").trim();
+    const year = String(m[2] || "").trim();
+    if (!film || film.length < 2 || film.length > 90) return null;
+    return `${film} (${year})`;
+  }, []);
+
+  const topFilmsForDirector = useCallback((dir) => {
+    if (!dir || !Array.isArray(dir.videos)) return [];
+    const cnt = {};
+    dir.videos.forEach(v => {
+      const fk = extractFilmKey(v.t);
+      if (!fk) return;
+      cnt[fk] = (cnt[fk] || 0) + 1;
+    });
+    return Object.entries(cnt).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  }, [extractFilmKey]);
+
+  const findVideosByFilmTitle = useCallback((filmTitle, limit = 40) => {
+    const q = String(filmTitle || "").trim().toLowerCase();
+    if (!q) return [];
+    const out = [];
+    for (let i = 0; i < catalog.length; i++) {
+      const v = catalog[i];
+      const t = String(v.t || "").toLowerCase();
+      if (t.includes(q)) out.push(v);
+      if (out.length >= limit) break;
+    }
+    out.sort((a, b) => String(b.d || "").localeCompare(String(a.d || "")));
+    return out;
+  }, [catalog]);
+
+  const filmsShown = useMemo(() => {
+    const qq = (filmQuery || "").trim().toLowerCase();
+    const list = qq ? films.filter(f => String(f.title || "").toLowerCase().includes(qq)) : films;
+    return list.slice(0, 140);
+  }, [films, filmQuery]);
+
+  useEffect(() => {
+    setHoveredId(null);
+    if (selectedView !== "directors") setSelectedDirector(null);
+    if (selectedView !== "films") setSelectedFilm(null);
+  }, [selectedView]);
 
   if (loading) return <LoadingIndicator message="Caricamento mappa..." />;
   if (error) return <ErrorMessage message={error} />;
+
+  const maxYearCount = Math.max(1, ...Object.values(yearlyDist));
+  const totalCat = Object.values(catDist).reduce((s, c) => s + c, 0) || 1;
 
   return (
     <div style={{ padding: "60px 24px", maxWidth: 1100, margin: "0 auto" }}>
@@ -677,15 +844,19 @@ function ConceptMap() {
           letterSpacing: "0.3em", textTransform: "uppercase",
           color: "#e8a94666", marginBottom: "12px",
         }}>Visualizzazioni</div>
+
         <h2 style={{
           fontFamily: "'Playfair Display', serif", fontSize: "2.5rem",
           color: "#f0e6d2", fontWeight: 400, margin: "0 0 24px",
-        }}>Mappa <span style={{ fontStyle: "italic", color: "#e8a946" }}>Concettuale</span></h2>
+        }}>
+          Mappa <span style={{ fontStyle: "italic", color: "#e8a946" }}>Concettuale</span>
+        </h2>
 
         <div style={{ display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap" }}>
           {[
             { id: "directors", label: "🎬 Registi" },
             { id: "genres", label: "🎭 Generi" },
+            { id: "films", label: "🎞️ Film" },
             { id: "years", label: "📅 Per Anno" },
             { id: "categories", label: "📊 Categorie" },
           ].map(v => (
@@ -700,127 +871,299 @@ function ConceptMap() {
         </div>
       </div>
 
-      {/* === DIRECTORS CONSTELLATION === */}
+      {/* DIRECTORS */}
       {selectedView === "directors" && (
-        <div style={{
-          background: "#0a0a0a", border: "1px solid #1a1a1a",
-          borderRadius: "8px", padding: "20px", overflow: "hidden",
-        }}>
-          {directorNodes.length > 0 ? (
-            <svg viewBox="0 0 800 600" style={{ width: "100%", maxHeight: "600px" }}>
-              <circle cx="400" cy="300" r="50" fill="#e8a94612" stroke="#e8a94633" strokeWidth="1" />
+        <>
+          <div style={{ display: "grid", gridTemplateColumns: "1fr 220px", gap: "12px", marginBottom: "14px" }}>
+            <div style={{
+              background: "#0a0a0a", border: "1px solid #1a1a1a",
+              borderRadius: "8px", padding: "12px",
+              display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center",
+            }}>
+              <input value={q} onChange={(e) => setQ(e.target.value)} placeholder="Cerca regista…"
+                style={{
+                  flex: "1 1 260px", background: "#0f0f0f",
+                  border: "1px solid #222", color: "#ccc",
+                  padding: "10px 12px", borderRadius: "4px",
+                  fontFamily: "'DM Sans'", fontSize: "0.85rem",
+                }} />
+
+              <select value={genreFilter} onChange={(e) => setGenreFilter(e.target.value)}
+                style={{
+                  background: "#0f0f0f", border: "1px solid #222", color: "#ccc",
+                  padding: "10px 12px", borderRadius: "4px",
+                  fontFamily: "'DM Sans'", fontSize: "0.82rem",
+                }}>
+                <option value="all">Tutti i generi</option>
+                {genres.map(g => <option key={g.genre} value={g.genre}>{g.genre}</option>)}
+              </select>
+
+              <div style={{ color: "#555", fontFamily: "'DM Mono'", fontSize: "0.7rem" }}>
+                Top: <span style={{ color: "#e8a946" }}>{Math.max(12, Math.min(topN, 90))}</span>
+              </div>
+
+              <input type="range" min="12" max="90" step="6" value={topN}
+                onChange={(e) => setTopN(parseInt(e.target.value, 10))}
+                style={{ width: "160px" }} />
+            </div>
+
+            <div style={{
+              background: "#0a0a0a", border: "1px solid #1a1a1a",
+              borderRadius: "8px", padding: "12px",
+              fontFamily: "'DM Mono'", fontSize: "0.72rem", color: "#555",
+              display: "flex", alignItems: "center", justifyContent: "center",
+              textAlign: "center",
+            }}>
+              Hover = connessioni per genere • Click = dettagli
+            </div>
+          </div>
+
+          <div style={{
+            background: "#0a0a0a", border: "1px solid #1a1a1a",
+            borderRadius: "8px", padding: "20px", overflow: "hidden",
+          }}>
+            <svg viewBox="0 0 800 600" style={{ width: "100%", maxHeight: "620px" }}>
+              <circle cx="400" cy="300" r="52" fill="#e8a94610" stroke="#e8a94633" strokeWidth="1" />
               <text x="400" y="296" textAnchor="middle" fill="#e8a946"
                 fontFamily="Playfair Display, serif" fontSize="13" fontWeight="700">FEDERICO</text>
               <text x="400" y="311" textAnchor="middle" fill="#e8a94688"
                 fontFamily="DM Sans, sans-serif" fontSize="8">FRUSCIANTE</text>
 
               {directorNodes.map((d, i) => (
-                <line key={`l${i}`} x1="400" y1="300" x2={d.x} y2={d.y}
-                  stroke={hoveredNode === i ? "#e8a94644" : "#e8a94610"}
-                  strokeWidth={hoveredNode === i ? 1.5 : 0.5}
-                  strokeDasharray={hoveredNode === i ? "none" : "3 4"} />
+                <line key={`s${i}`} x1="400" y1="300" x2={d.x} y2={d.y}
+                  stroke="#e8a94610" strokeWidth="0.5" strokeDasharray="3 6" />
               ))}
 
-              {directorNodes.map((d, i) => (
-                <g key={i} onMouseEnter={() => setHoveredNode(i)}
-                  onMouseLeave={() => setHoveredNode(null)} style={{ cursor: "pointer" }}>
-                  <circle cx={d.x} cy={d.y} r={d.r}
-                    fill={hoveredNode === i ? "#1a1511" : "#0f0f0f"}
-                    stroke={hoveredNode === i ? "#e8a94666" : "#1a1a1a"}
-                    strokeWidth={hoveredNode === i ? 2 : 1} />
-                  <text x={d.x} y={d.y - 2} textAnchor="middle"
-                    fill={hoveredNode === i ? "#f0e6d2" : "#888"}
-                    fontFamily="DM Sans, sans-serif"
-                    fontSize={d.name.length > 16 ? "6.5" : "7.5"} fontWeight="600">
-                    {d.name}
-                  </text>
-                  <text x={d.x} y={d.y + 10} textAnchor="middle"
-                    fill={hoveredNode === i ? "#e8a946" : "#444"}
-                    fontFamily="DM Sans, sans-serif" fontSize="7">
-                    {d.video_count} video
-                  </text>
-                  {hoveredNode === i && d.genres && (
-                    <text x={d.x} y={d.y + 20} textAnchor="middle"
-                      fill="#666" fontFamily="DM Sans, sans-serif" fontSize="6">
-                      {d.genres.join(" · ")}
+              {(() => {
+                const activeId = selectedDirector?.id || hoveredId;
+                if (!activeId || !sharedLinks[activeId]) return null;
+                const active = directorNodes.find(n => n.id === activeId);
+                if (!active) return null;
+
+                const neigh = sharedLinks[activeId] || {};
+                return Object.entries(neigh)
+                  .sort((a, b) => b[1] - a[1])
+                  .slice(0, 18)
+                  .map(([toId, w]) => {
+                    const b = directorNodes.find(n => n.id === toId);
+                    if (!b) return null;
+                    return (
+                      <line key={`g${toId}`} x1={active.x} y1={active.y} x2={b.x} y2={b.y}
+                        stroke="#e8a94644" strokeWidth={0.6 + w * 0.6} />
+                    );
+                  });
+              })()}
+
+              {directorNodes.map((d) => {
+                const isHovered = hoveredId === d.id;
+                const isSelected = selectedDirector?.id === d.id;
+                const primary = d.primaryGenre ? genreColor(d.primaryGenre) : "#666";
+                const textColor = isHovered || isSelected ? "#f0e6d2" : "#888";
+
+                return (
+                  <g key={d.id}
+                    onMouseEnter={() => setHoveredId(d.id)}
+                    onMouseLeave={() => setHoveredId(null)}
+                    onClick={() => setSelectedDirector(d)}
+                    style={{ cursor: "pointer" }}>
+                    <circle cx={d.x} cy={d.y} r={d.r}
+                      fill={isHovered || isSelected ? "#0f0f0f" : "#0b0b0b"}
+                      stroke={isHovered || isSelected ? "#e8a94666" : "#1a1a1a"}
+                      strokeWidth={isHovered || isSelected ? 2 : 1} />
+                    <circle cx={d.x} cy={d.y} r={Math.max(6, d.r - 4)}
+                      fill="none" stroke={`${primary}66`} strokeWidth="1" />
+
+                    <text x={d.x} y={d.y - 2} textAnchor="middle"
+                      fill={textColor} fontFamily="DM Sans, sans-serif"
+                      fontSize={String(d.name).length > 16 ? "6.5" : "7.5"} fontWeight="600">
+                      {d.name}
                     </text>
-                  )}
-                </g>
-              ))}
+                    <text x={d.x} y={d.y + 10} textAnchor="middle"
+                      fill={isHovered || isSelected ? "#e8a946" : "#444"}
+                      fontFamily="DM Mono, monospace" fontSize="7">
+                      {d.video_count} video
+                    </text>
+
+                    {(isHovered || isSelected) && d.genres?.length > 0 && (
+                      <text x={d.x} y={d.y + 20} textAnchor="middle"
+                        fill="#666" fontFamily="DM Sans, sans-serif" fontSize="6">
+                        {d.genres.slice(0, 4).join(" · ")}{d.genres.length > 4 ? "…" : ""}
+                      </text>
+                    )}
+                  </g>
+                );
+              })}
             </svg>
-          ) : (
-            <div style={{ textAlign: "center", padding: "40px", color: "#555" }}>
-              Nessun regista trovato nei dati
+          </div>
+
+          {selectedDirector && (
+            <div style={{
+              marginTop: "14px",
+              background: "#0d0b08", border: "1px solid #1a150d",
+              borderRadius: "8px", padding: "18px",
+            }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "12px", flexWrap: "wrap" }}>
+                <div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", color: "#f0e6d2" }}>
+                    {selectedDirector.name}
+                  </div>
+                  <div style={{ marginTop: "6px", fontFamily: "'DM Mono'", fontSize: "0.75rem", color: "#666" }}>
+                    {selectedDirector.video_count} video • {(selectedDirector.genres || []).join(" · ") || "—"}
+                  </div>
+                </div>
+
+                <button onClick={() => setSelectedDirector(null)} style={{
+                  background: "#111", border: "1px solid #222", color: "#666",
+                  padding: "8px 12px", borderRadius: "4px", cursor: "pointer",
+                  fontFamily: "'DM Sans'", fontSize: "0.8rem",
+                }}>Chiudi</button>
+              </div>
+
+              {(() => {
+                const top = topFilmsForDirector(selectedDirector);
+                if (!top.length) return null;
+                return (
+                  <div style={{ marginTop: "14px" }}>
+                    <div style={{ fontFamily: "'DM Sans'", fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#e8a94666", marginBottom: "8px" }}>
+                      Film ricorrenti (dai titoli)
+                    </div>
+                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" }}>
+                      {top.map(([k, c]) => (
+                        <span key={k} style={{
+                          background: "#111", border: "1px solid #222", color: "#aaa",
+                          padding: "6px 10px", borderRadius: "999px",
+                          fontFamily: "'DM Sans'", fontSize: "0.8rem",
+                        }}>{k} <span style={{ color: "#555", fontFamily: "'DM Mono'" }}>×{c}</span></span>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })()}
+
+              <div style={{ marginTop: "14px" }}>
+                <div style={{ fontFamily: "'DM Sans'", fontSize: "0.7rem", letterSpacing: "0.2em", textTransform: "uppercase", color: "#e8a94666", marginBottom: "10px" }}>
+                  Video (campione)
+                </div>
+
+                <div style={{ display: "grid", gap: "8px" }}>
+                  {(selectedDirector.videos || []).slice(0, 18).map(v => (
+                    <a key={v.id} href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noreferrer"
+                      style={{ background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "6px", padding: "10px 12px", textDecoration: "none" }}>
+                      <div style={{ fontFamily: "'DM Sans'", fontSize: "0.9rem", color: "#ccc", lineHeight: 1.4 }}>{v.t}</div>
+                      <div style={{ marginTop: "4px", fontFamily: "'DM Mono'", fontSize: "0.72rem", color: "#555" }}>{v.d} • {v.id}</div>
+                    </a>
+                  ))}
+                </div>
+              </div>
             </div>
           )}
-        </div>
+        </>
       )}
 
-      {/* === GENRE CONNECTIONS === */}
+      {/* GENRES */}
       {selectedView === "genres" && (
-        <div style={{
-          background: "#0a0a0a", border: "1px solid #1a1a1a",
-          borderRadius: "8px", padding: "40px",
-        }}>
-          {Object.entries(genreConnections).map(([genre, dirs]) => (
-            <div key={genre} style={{
-              borderLeft: `3px solid ${GENRE_COLORS[genre] || "#555"}`,
-              paddingLeft: "20px", marginBottom: "24px",
-            }}>
-              <div style={{
-                fontFamily: "'Playfair Display', serif", fontSize: "1.2rem",
-                color: GENRE_COLORS[genre] || "#888", marginBottom: "10px",
-              }}>{genre} <span style={{ fontSize: "0.7rem", color: "#555" }}>({dirs.length} registi)</span></div>
+        <div style={{ background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "34px" }}>
+          {genres.map(({ genre, directors: dirs }) => (
+            <div key={genre} style={{ borderLeft: `3px solid ${genreColor(genre)}`, paddingLeft: "20px", marginBottom: "24px" }}>
+              <div style={{ display: "flex", alignItems: "baseline", gap: "10px", flexWrap: "wrap", marginBottom: "10px" }}>
+                <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.2rem", color: genreColor(genre) }}>{genre}</div>
+                <div style={{ fontSize: "0.7rem", color: "#555", fontFamily: "'DM Mono'" }}>{dirs.length} registi</div>
+              </div>
+
               <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
-                {dirs.map(d => {
-                  const dir = directors.find(dd => dd.name === d);
-                  const otherGenres = dir?.genres?.filter(g => g !== genre) || [];
-                  return (
-                    <div key={d} style={{
-                      background: `${GENRE_COLORS[genre] || "#555"}08`,
-                      border: `1px solid ${GENRE_COLORS[genre] || "#555"}22`,
-                      borderRadius: "4px", padding: "8px 12px",
-                    }}>
-                      <div style={{
-                        fontFamily: "'DM Sans'", fontSize: "0.82rem", color: "#ccc",
-                      }}>{d}</div>
-                      {dir && (
-                        <div style={{
-                          fontFamily: "'DM Mono'", fontSize: "0.65rem", color: "#555", marginTop: "2px",
-                        }}>{dir.video_count} video{otherGenres.length > 0 ? ` · anche: ${otherGenres.join(", ")}` : ""}</div>
-                      )}
-                    </div>
-                  );
-                })}
+                {dirs.map(dn => (
+                  <button key={dn} onClick={() => {
+                    setSelectedView("directors");
+                    setQ(dn);
+                    setGenreFilter("all");
+                    setTopN(36);
+                  }} style={{
+                    background: `${genreColor(genre)}10`,
+                    border: `1px solid ${genreColor(genre)}22`,
+                    borderRadius: "4px", padding: "8px 12px",
+                    cursor: "pointer",
+                  }}>
+                    <div style={{ fontFamily: "'DM Sans'", fontSize: "0.82rem", color: "#ccc", textAlign: "left" }}>{dn}</div>
+                  </button>
+                ))}
               </div>
             </div>
           ))}
         </div>
       )}
 
-      {/* === YEARLY DISTRIBUTION === */}
+      {/* FILMS */}
+      {selectedView === "films" && (
+        <div style={{ background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "34px" }}>
+          <div style={{ display: "flex", gap: "10px", flexWrap: "wrap", alignItems: "center", marginBottom: "16px" }}>
+            <input value={filmQuery} onChange={(e) => setFilmQuery(e.target.value)} placeholder="Cerca film…"
+              style={{
+                flex: "1 1 320px",
+                background: "#0f0f0f", border: "1px solid #222", color: "#ccc",
+                padding: "10px 12px", borderRadius: "4px",
+                fontFamily: "'DM Sans'", fontSize: "0.85rem",
+              }} />
+            <div style={{ fontFamily: "'DM Mono'", fontSize: "0.72rem", color: "#555" }}>
+              Mostrati: <span style={{ color: "#e8a946" }}>{filmsShown.length}</span> / {films.length}
+            </div>
+          </div>
+
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(240px, 1fr))", gap: "10px" }}>
+            {filmsShown.map(f => (
+              <button key={f.title} onClick={() => setSelectedFilm(f.title)} style={{
+                background: selectedFilm === f.title ? "#e8a94612" : "#0f0f0f",
+                border: `1px solid ${selectedFilm === f.title ? "#e8a94644" : "#1a1a1a"}`,
+                borderRadius: "8px", padding: "12px", cursor: "pointer",
+                textAlign: "left",
+              }}>
+                <div style={{ fontFamily: "'DM Sans'", fontSize: "0.95rem", color: "#ccc" }}>{f.title}</div>
+                <div style={{ marginTop: "6px", fontFamily: "'DM Mono'", fontSize: "0.72rem", color: "#555" }}>
+                  Occorrenze: <span style={{ color: "#e8a946" }}>{f.count}</span>
+                </div>
+              </button>
+            ))}
+          </div>
+
+          {selectedFilm && (
+            <div style={{ marginTop: "18px", background: "#0d0b08", border: "1px solid #1a150d", borderRadius: "8px", padding: "18px" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "12px", flexWrap: "wrap" }}>
+                <div>
+                  <div style={{ fontFamily: "'Playfair Display', serif", fontSize: "1.5rem", color: "#f0e6d2" }}>{selectedFilm}</div>
+                  <div style={{ marginTop: "6px", fontFamily: "'DM Mono'", fontSize: "0.75rem", color: "#666" }}>
+                    Video correlati (match sul titolo)
+                  </div>
+                </div>
+                <button onClick={() => setSelectedFilm(null)} style={{
+                  background: "#111", border: "1px solid #222", color: "#666",
+                  padding: "8px 12px", borderRadius: "4px", cursor: "pointer",
+                  fontFamily: "'DM Sans'", fontSize: "0.8rem",
+                }}>Chiudi</button>
+              </div>
+
+              <div style={{ marginTop: "14px", display: "grid", gap: "8px" }}>
+                {findVideosByFilmTitle(selectedFilm, 40).map(v => (
+                  <a key={v.id} href={`https://www.youtube.com/watch?v=${v.id}`} target="_blank" rel="noreferrer"
+                    style={{ background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "6px", padding: "10px 12px", textDecoration: "none" }}>
+                    <div style={{ fontFamily: "'DM Sans'", fontSize: "0.9rem", color: "#ccc", lineHeight: 1.4 }}>{v.t}</div>
+                    <div style={{ marginTop: "4px", fontFamily: "'DM Mono'", fontSize: "0.72rem", color: "#555" }}>{v.d} • {v.cl || v.c}</div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* YEARS */}
       {selectedView === "years" && (
-        <div style={{
-          background: "#0a0a0a", border: "1px solid #1a1a1a",
-          borderRadius: "8px", padding: "40px",
-        }}>
+        <div style={{ background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "40px" }}>
           <div style={{ maxWidth: 700, margin: "0 auto" }}>
             {Object.entries(yearlyDist).sort().map(([year, count]) => {
-              const maxCount = Math.max(...Object.values(yearlyDist));
-              const pct = (count / maxCount) * 100;
+              const pct = (count / maxYearCount) * 100;
               return (
-                <div key={year} style={{
-                  display: "flex", alignItems: "center", gap: "12px",
-                  marginBottom: "10px",
-                }}>
-                  <span style={{
-                    fontFamily: "'DM Mono'", fontSize: "0.8rem",
-                    color: "#e8a946", minWidth: "40px",
-                  }}>{year}</span>
-                  <div style={{
-                    flex: 1, height: "20px", background: "#111",
-                    borderRadius: "3px", overflow: "hidden",
-                  }}>
+                <div key={year} style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px" }}>
+                  <span style={{ fontFamily: "'DM Mono'", fontSize: "0.8rem", color: "#e8a946", minWidth: "40px" }}>{year}</span>
+                  <div style={{ flex: 1, height: "20px", background: "#111", borderRadius: "3px", overflow: "hidden" }}>
                     <div style={{
                       width: `${pct}%`, height: "100%",
                       background: `linear-gradient(90deg, #e8a946, #c45c4a)`,
@@ -828,19 +1171,10 @@ function ConceptMap() {
                       display: "flex", alignItems: "center", justifyContent: "flex-end",
                       paddingRight: "8px",
                     }}>
-                      {pct > 15 && (
-                        <span style={{
-                          fontFamily: "'DM Mono'", fontSize: "0.65rem",
-                          color: "#0a0a0a", fontWeight: 700,
-                        }}>{count}</span>
-                      )}
+                      {pct > 15 && <span style={{ fontFamily: "'DM Mono'", fontSize: "0.65rem", color: "#0a0a0a", fontWeight: 700 }}>{count}</span>}
                     </div>
                   </div>
-                  {pct <= 15 && (
-                    <span style={{
-                      fontFamily: "'DM Mono'", fontSize: "0.7rem", color: "#555",
-                    }}>{count}</span>
-                  )}
+                  {pct <= 15 && <span style={{ fontFamily: "'DM Mono'", fontSize: "0.7rem", color: "#555" }}>{count}</span>}
                 </div>
               );
             })}
@@ -848,44 +1182,25 @@ function ConceptMap() {
         </div>
       )}
 
-      {/* === CATEGORY DISTRIBUTION === */}
+      {/* CATEGORIES */}
       {selectedView === "categories" && (
-        <div style={{
-          background: "#0a0a0a", border: "1px solid #1a1a1a",
-          borderRadius: "8px", padding: "40px",
-        }}>
-          <div style={{ maxWidth: 600, margin: "0 auto" }}>
-            {Object.entries(catDist)
-              .sort((a, b) => b[1] - a[1])
-              .map(([catId, count]) => {
-                const meta = CATEGORY_META[catId] || CATEGORY_META.altro;
-                const total = Object.values(catDist).reduce((s, c) => s + c, 0);
-                const pct = (count / total) * 100;
-                return (
-                  <div key={catId} style={{ marginBottom: "14px" }}>
-                    <div style={{
-                      display: "flex", justifyContent: "space-between",
-                      marginBottom: "5px",
-                    }}>
-                      <span style={{
-                        fontFamily: "'DM Sans'", fontSize: "0.85rem", color: "#ccc",
-                      }}>{meta.icon} {catId}</span>
-                      <span style={{
-                        fontFamily: "'DM Mono'", fontSize: "0.75rem", color: "#666",
-                      }}>{count} • {pct.toFixed(1)}%</span>
-                    </div>
-                    <div style={{
-                      height: "6px", background: "#111", borderRadius: "3px", overflow: "hidden",
-                    }}>
-                      <div style={{
-                        width: `${pct}%`, height: "100%",
-                        background: meta.color, borderRadius: "3px",
-                        transition: "width 0.8s ease",
-                      }} />
-                    </div>
+        <div style={{ background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "40px" }}>
+          <div style={{ maxWidth: 650, margin: "0 auto" }}>
+            {Object.entries(catDist).sort((a, b) => b[1] - a[1]).map(([catId, count]) => {
+              const meta = CATEGORY_META[catId] || { icon: "📽️", color: hashColor(`cat:${catId}`) };
+              const pct = (count / totalCat) * 100;
+              return (
+                <div key={catId} style={{ marginBottom: "14px" }}>
+                  <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "5px" }}>
+                    <span style={{ fontFamily: "'DM Sans'", fontSize: "0.85rem", color: "#ccc" }}>{meta.icon} {catId}</span>
+                    <span style={{ fontFamily: "'DM Mono'", fontSize: "0.75rem", color: "#666" }}>{count} • {pct.toFixed(1)}%</span>
                   </div>
-                );
-              })}
+                  <div style={{ height: "6px", background: "#111", borderRadius: "3px", overflow: "hidden" }}>
+                    <div style={{ width: `${pct}%`, height: "100%", background: meta.color, borderRadius: "3px", transition: "width 0.8s ease" }} />
+                  </div>
+                </div>
+              );
+            })}
           </div>
         </div>
       )}
