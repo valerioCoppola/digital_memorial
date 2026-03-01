@@ -1302,76 +1302,13 @@ function ProjectInfo() {
           Oltre 4000 video, dal 2014 al 2026, sono stati trascritti integralmente.
         </p>
 
-        <div style={{
-          background: "#0d0b08", border: "1px solid #1a150d",
-          borderRadius: "4px", padding: "24px", marginBottom: "24px",
-        }}>
-          <div style={{
-            fontFamily: "'Playfair Display', serif", fontSize: "1.1rem",
-            color: "#e8a946", marginBottom: "16px",
-          }}>Come funziona il sistema</div>
-          <div style={{
-            fontFamily: "'DM Mono'", fontSize: "0.78rem", color: "#888",
-            lineHeight: 2, background: "#0a0a0a", padding: "16px",
-            borderRadius: "3px", border: "1px solid #1a1a1a",
-          }}>
-            <div style={{ color: "#555" }}># 1. I tuoi file originali</div>
-            <div>data/transcripts/</div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>├── <span style={{ color: "#e8a946" }}>20141023</span>_<span style={{ color: "#5bb5a2" }}>WZVnQNsfQe4</span>_<span style={{ color: "#c45c4a" }}>Titolo</span>.json</div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>└── <span style={{ color: "#e8a946" }}>20141023</span>_<span style={{ color: "#5bb5a2" }}>WZVnQNsfQe4</span>_<span style={{ color: "#c45c4a" }}>Titolo</span>.txt</div>
-            <br />
-            <div style={{ color: "#555" }}># 2. Esegui il build</div>
-            <div>python build_index.py --input data/transcripts --output site/data</div>
-            <br />
-            <div style={{ color: "#555" }}># 3. Viene generato:</div>
-            <div>site/data/</div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>├── index.json          <span style={{ color: "#555" }}>← catalogo completo</span></div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>├── stats.json          <span style={{ color: "#555" }}>← statistiche</span></div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>├── directors.json      <span style={{ color: "#555" }}>← mappa registi</span></div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>├── films.json          <span style={{ color: "#555" }}>← film citati</span></div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>├── categories.json     <span style={{ color: "#555" }}>← categorie</span></div>
-            <div style={{ color: "#666", paddingLeft: "16px" }}>└── transcripts/        <span style={{ color: "#555" }}>← 4000+ file singoli</span></div>
-            <br />
-            <div style={{ color: "#555" }}># 4. Pubblica gratis su GitHub Pages</div>
-            <div>git push → il sito è online!</div>
-          </div>
-        </div>
+       
 
         <p style={{ marginBottom: "20px" }}>
           L'archivio è organizzato in categorie derivate automaticamente dai titoli dei video,
           e arricchito con mappe concettuali che collegano registi, generi, e temi ricorrenti
           nell'universo cinematografico di Federico.
         </p>
-
-        <div style={{
-          background: "#0d0b08", border: "1px solid #1a150d",
-          borderRadius: "4px", padding: "24px",
-        }}>
-          <div style={{
-            fontFamily: "'Playfair Display', serif", fontSize: "1.1rem",
-            color: "#e8a946", marginBottom: "12px",
-          }}>Contribuire</div>
-          <p style={{ margin: 0 }}>
-            Questo è un progetto aperto e gratuito, creato dalla community per la community.
-            Se vuoi contribuire — correzioni, trascrizioni mancanti, suggerimenti —
-            il codice è su GitHub. Il sogno di Federico era una Casa del Cinema a Livorno.
-            Questo archivio è un primo passo.
-          </p>
-        </div>
-      </div>
-
-      <div style={{
-        marginTop: "40px", textAlign: "center", padding: "32px",
-        borderTop: "1px solid #1a1a1a",
-      }}>
-        <div style={{
-          fontFamily: "'DM Sans'", fontSize: "0.65rem",
-          letterSpacing: "0.2em", textTransform: "uppercase",
-          color: "#444", marginBottom: "16px",
-        }}>I Criticoni</div>
-        <div style={{
-          fontFamily: "'DM Sans'", fontSize: "0.85rem", color: "#888",
-        }}>Federico Frusciante • Francesco Alò • Davide Marra • Mattia Ferrari</div>
       </div>
     </div>
   );
