@@ -9,53 +9,37 @@ const { useState, useEffect, useRef, useMemo, useCallback } = React;
 const DATA_BASE_URL = "./data"; // Percorso ai file generati da build_index.py
 
 const CATEGORY_META = {
-  patreon:        { icon: "🎟️", color: "#c49a6c", label: "Patreon / Minirece" },
-  al_cinema:      { icon: "🎬", color: "#e8a946", label: "Al Cinema" },
-  consigli:       { icon: "📋", color: "#6aaa64", label: "I Consigli" },
-  monografie:     { icon: "🎭", color: "#c45c4a", label: "Le Monografie" },
-  classici:       { icon: "🏛️", color: "#d4a853", label: "I Classici" },
-  musicali:       { icon: "🎵", color: "#8b6cc1", label: "Consigli Musicali" },
-  speciali:       { icon: "🌟", color: "#e8c846", label: "Speciali" },
-  saghe:          { icon: "⚔️", color: "#4a90c4", label: "Le Saghe" },
-  oriente:        { icon: "🏯", color: "#e05555", label: "In Oriente" },
-  letterari:      { icon: "📚", color: "#7aaa84", label: "Consigli Letterari" },
-  underground:    { icon: "🕳️", color: "#8a4a4a", label: "Underground" },
-  meglio_peggio:  { icon: "🏆", color: "#d4a853", label: "Meglio e Peggio" },
-  imperdibili:    { icon: "💎", color: "#5bb5a2", label: "(Im)Perdibili" },
-  interviste:     { icon: "🎤", color: "#c49a6c", label: "Le Interviste" },
-  reboot:         { icon: "🔄", color: "#4a90c4", label: "I Reboot" },
-  con_lomuscio:   { icon: "🎹", color: "#6a8cc1", label: "Con Marco Lo Muscio" },
-  criticoni:      { icon: "🎪", color: "#c45c4a", label: "I Criticoni" },
-  eventi:         { icon: "🎪", color: "#e05555", label: "Eventi Live" },
-  quarantena:     { icon: "🏠", color: "#888", label: "Quarantena" },
-  consigli_brevi: { icon: "⚡", color: "#e8a946", label: "Consigli Brevi" },
-  scifi:          { icon: "🚀", color: "#5bb5a2", label: "Fantascienza" },
-  recensioni:     { icon: "⭐", color: "#6aaa64", label: "Le Recensioni" },
-  vlog:           { icon: "📢", color: "#888", label: "Messaggi & Vlog" },
-  altro:          { icon: "📽️", color: "#555", label: "Altro" },
+  consigli: { icon: "🎬", color: "#e8a946" },
+  monografie: { icon: "🎭", color: "#c45c4a" },
+  recensioni: { icon: "⭐", color: "#6aaa64" },
+  recensioni_annuali: { icon: "🏆", color: "#d4a853" },
+  musicali: { icon: "🎵", color: "#8b6cc1" },
+  reboot: { icon: "🔄", color: "#4a90c4" },
+  speciali: { icon: "🌟", color: "#d4a853" },
+  scifi: { icon: "🚀", color: "#5bb5a2" },
+  worst: { icon: "💀", color: "#8a4a4a" },
+  classifiche: { icon: "📋", color: "#e8a946" },
+  interviste: { icon: "🎤", color: "#c49a6c" },
+  criticoni: { icon: "🎪", color: "#c45c4a" },
+  live: { icon: "🔴", color: "#e05555" },
+  altro: { icon: "📽️", color: "#888" },
 };
 
 const GENRE_COLORS = {
   Horror: "#c45c4a",
   "Sci-Fi": "#5bb5a2",
-  Autore: "#e8a946",
-  Italiano: "#8b6cc1",
+  Auteur: "#e8a946",
+  Italian: "#8b6cc1",
   Giallo: "#d4a853",
   Cult: "#6aaa64",
   Crime: "#8a4a4a",
-  Commedia: "#e8c846",
+  Comedy: "#e8c846",
   Fantasy: "#6a8cc1",
-  Azione: "#c47a4a",
+  Action: "#c47a4a",
   Indie: "#7aaa84",
-  Avventura: "#4a90c4",
-  Surrealismo: "#c46a8a",
-  "B-Movie": "#6aaa64",
-  Thriller: "#c49a6c",
-  Western: "#d4a853",
-  Drammatico: "#8a6a8a",
-  Animazione: "#5bb5a2",
-  Orientale: "#e05555",
-  Classico: "#d4a853",
+  Adventure: "#4a90c4",
+  Surrealism: "#c46a8a",
+  "B-Movie / Cult": "#6aaa64",
   "Non classificato": "#555",
 };
 
@@ -367,7 +351,7 @@ function VideodromeTribute({ stats, onNavigate }) {
                   <span style={{
                     fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem",
                     color: "#ccc",
-                  }}>{meta.icon} {meta.label || catId}</span>
+                  }}>{meta.icon} {catId}</span>
                   <span style={{
                     fontFamily: "'DM Mono', monospace", fontSize: "0.7rem",
                     color: meta.color,
@@ -506,7 +490,7 @@ function ArchiveSection() {
               color: selectedCat === catId ? meta.color : "#666",
               padding: "6px 14px", borderRadius: "20px", cursor: "pointer",
               fontFamily: "'DM Sans', sans-serif", fontSize: "0.73rem",
-            }}>{meta.icon} {meta.label || label} ({count})</button>
+            }}>{meta.icon} {label} ({count})</button>
           );
         })}
       </div>
@@ -658,275 +642,254 @@ function ConceptMap() {
   const { data: directorsData, loading, error } = useJsonData("directors.json");
   const { data: statsData } = useJsonData("stats.json");
   const [selectedView, setSelectedView] = useState("directors");
-  const [selectedDirector, setSelectedDirector] = useState(null);
-  const [selectedGenre, setSelectedGenre] = useState(null);
+  const [hoveredNode, setHoveredNode] = useState(null);
 
   const directors = directorsData?.directors || [];
   const genreConnections = directorsData?.genre_connections || {};
 
+  // Generate node positions for director constellation
+  const directorNodes = useMemo(() => {
+    const top = directors.slice(0, 24); // Show top 24
+    const cx = 400, cy = 300;
+    return top.map((d, i) => {
+      const angle = (i / top.length) * Math.PI * 2 - Math.PI / 2;
+      const radius = 160 + (i % 3) * 45;
+      return {
+        ...d,
+        x: cx + Math.cos(angle) * radius,
+        y: cy + Math.sin(angle) * radius,
+        r: 18 + Math.min(d.video_count, 10) * 4,
+      };
+    });
+  }, [directors]);
+
   const yearlyDist = statsData?.yearly_distribution || {};
   const catDist = statsData?.category_distribution || {};
 
-  if (loading) return React.createElement(LoadingIndicator, { message: "Caricamento mappa..." });
-  if (error) return React.createElement(ErrorMessage, { message: error });
-
-  // Get selected director's details
-  const selDir = selectedDirector ? directors.find(d => d.name === selectedDirector) : null;
-  // Get directors in selected genre
-  const genreDirs = selectedGenre ? (genreConnections[selectedGenre] || []) : [];
+  if (loading) return <LoadingIndicator message="Caricamento mappa..." />;
+  if (error) return <ErrorMessage message={error} />;
 
   return (
-    React.createElement("div", { style: { padding: "60px 24px", maxWidth: 1100, margin: "0 auto" } },
-      React.createElement("div", { style: { textAlign: "center", marginBottom: "48px" } },
-        React.createElement("div", { style: {
+    <div style={{ padding: "60px 24px", maxWidth: 1100, margin: "0 auto" }}>
+      <div style={{ textAlign: "center", marginBottom: "48px" }}>
+        <div style={{
           fontFamily: "'DM Sans'", fontSize: "0.65rem",
           letterSpacing: "0.3em", textTransform: "uppercase",
           color: "#e8a94666", marginBottom: "12px",
-        } }, "Visualizzazioni"),
-        React.createElement("h2", { style: {
+        }}>Visualizzazioni</div>
+        <h2 style={{
           fontFamily: "'Playfair Display', serif", fontSize: "2.5rem",
           color: "#f0e6d2", fontWeight: 400, margin: "0 0 24px",
-        } }, "Mappa ", React.createElement("span", { style: { fontStyle: "italic", color: "#e8a946" } }, "Concettuale")),
+        }}>Mappa <span style={{ fontStyle: "italic", color: "#e8a946" }}>Concettuale</span></h2>
 
-        React.createElement("div", { style: { display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap" } },
-          [
+        <div style={{ display: "flex", gap: "6px", justifyContent: "center", flexWrap: "wrap" }}>
+          {[
             { id: "directors", label: "🎬 Registi" },
             { id: "genres", label: "🎭 Generi" },
             { id: "years", label: "📅 Per Anno" },
             { id: "categories", label: "📊 Categorie" },
-          ].map(function(v) {
-            return React.createElement("button", {
-              key: v.id, onClick: function() { setSelectedView(v.id); setSelectedDirector(null); setSelectedGenre(null); },
-              style: {
-                background: selectedView === v.id ? "#e8a94615" : "#111",
-                border: "1px solid " + (selectedView === v.id ? "#e8a94644" : "#222"),
-                color: selectedView === v.id ? "#e8a946" : "#666",
-                padding: "8px 16px", borderRadius: "4px", cursor: "pointer",
-                fontFamily: "'DM Sans'", fontSize: "0.8rem",
-              }
-            }, v.label);
-          })
-        )
-      ),
+          ].map(v => (
+            <button key={v.id} onClick={() => setSelectedView(v.id)} style={{
+              background: selectedView === v.id ? "#e8a94615" : "#111",
+              border: `1px solid ${selectedView === v.id ? "#e8a94644" : "#222"}`,
+              color: selectedView === v.id ? "#e8a946" : "#666",
+              padding: "8px 16px", borderRadius: "4px", cursor: "pointer",
+              fontFamily: "'DM Sans'", fontSize: "0.8rem",
+            }}>{v.label}</button>
+          ))}
+        </div>
+      </div>
 
-      // === DIRECTORS — Interactive Grid ===
-      selectedView === "directors" && React.createElement("div", {
-        style: { background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "30px" }
-      },
-        // Director grid
-        React.createElement("div", {
-          style: { display: "flex", flexWrap: "wrap", gap: "8px", justifyContent: "center", marginBottom: "24px" }
-        },
-          directors.slice(0, 40).map(function(d) {
-            var isSelected = selectedDirector === d.name;
-            var isHighlighted = selectedGenre && genreDirs.includes(d.name);
-            var isFaded = selectedGenre && !genreDirs.includes(d.name);
-            return React.createElement("div", {
-              key: d.name,
-              onClick: function() { setSelectedDirector(isSelected ? null : d.name); setSelectedGenre(null); },
-              style: {
-                background: isSelected ? "#1a1511" : isFaded ? "#0a0a0a" : "#0f0f0f",
-                border: "1px solid " + (isSelected ? "#e8a94666" : isHighlighted ? "#e8a94633" : "#1a1a1a"),
-                borderRadius: "6px", padding: "12px 16px", cursor: "pointer",
-                transition: "all 0.2s", opacity: isFaded ? 0.3 : 1,
-                minWidth: "140px", textAlign: "center",
-                boxShadow: isSelected ? "0 0 20px #e8a94622" : "none",
-              }
-            },
-              React.createElement("div", { style: {
-                fontFamily: "'DM Sans'", fontSize: "0.85rem",
-                color: isSelected ? "#e8a946" : isHighlighted ? "#e8a946" : "#ccc",
-                fontWeight: isSelected ? 600 : 400,
-              } }, d.name),
-              React.createElement("div", { style: {
-                fontFamily: "'DM Mono'", fontSize: "0.65rem",
-                color: isSelected ? "#e8a94688" : "#444", marginTop: "4px",
-              } }, d.count + " video"),
-              React.createElement("div", { style: {
-                display: "flex", gap: "3px", justifyContent: "center", marginTop: "6px", flexWrap: "wrap",
-              } },
-                (d.genres || []).map(function(g) {
-                  return React.createElement("span", {
-                    key: g,
-                    onClick: function(e) { e.stopPropagation(); setSelectedGenre(selectedGenre === g ? null : g); setSelectedDirector(null); },
-                    style: {
-                      fontSize: "0.6rem", padding: "1px 6px", borderRadius: "8px",
-                      background: (GENRE_COLORS[g] || "#555") + "18",
-                      color: (selectedGenre === g ? "#fff" : (GENRE_COLORS[g] || "#555")),
-                      border: "1px solid " + (selectedGenre === g ? (GENRE_COLORS[g] || "#555") : "transparent"),
-                      cursor: "pointer", fontFamily: "'DM Sans'",
-                    }
-                  }, g);
-                })
-              )
-            );
-          })
-        ),
+      {/* === DIRECTORS CONSTELLATION === */}
+      {selectedView === "directors" && (
+        <div style={{
+          background: "#0a0a0a", border: "1px solid #1a1a1a",
+          borderRadius: "8px", padding: "20px", overflow: "hidden",
+        }}>
+          {directorNodes.length > 0 ? (
+            <svg viewBox="0 0 800 600" style={{ width: "100%", maxHeight: "600px" }}>
+              <circle cx="400" cy="300" r="50" fill="#e8a94612" stroke="#e8a94633" strokeWidth="1" />
+              <text x="400" y="296" textAnchor="middle" fill="#e8a946"
+                fontFamily="Playfair Display, serif" fontSize="13" fontWeight="700">FEDERICO</text>
+              <text x="400" y="311" textAnchor="middle" fill="#e8a94688"
+                fontFamily="DM Sans, sans-serif" fontSize="8">FRUSCIANTE</text>
 
-        // Selected director detail panel
-        selDir && React.createElement("div", {
-          style: {
-            background: "#0d0b08", border: "1px solid #2a2218", borderRadius: "6px",
-            padding: "24px", marginTop: "8px",
-          }
-        },
-          React.createElement("div", { style: {
-            fontFamily: "'Playfair Display', serif", fontSize: "1.4rem",
-            color: "#e8a946", marginBottom: "8px",
-          } }, "🎬 " + selDir.name),
-          React.createElement("div", { style: {
-            fontFamily: "'DM Sans'", fontSize: "0.8rem", color: "#888", marginBottom: "16px",
-          } }, selDir.count + " video dedicati · Generi: " + (selDir.genres || []).join(", ")),
-          React.createElement("div", { style: {
-            fontFamily: "'DM Sans'", fontSize: "0.75rem", color: "#555",
-            marginBottom: "8px", textTransform: "uppercase", letterSpacing: "0.1em",
-          } }, "Video dedicati:"),
-          React.createElement("div", { style: { display: "flex", flexDirection: "column", gap: "4px" } },
-            (selDir.videos || []).map(function(v) {
-              return React.createElement("a", {
-                key: v.id,
-                href: "https://youtube.com/watch?v=" + v.id,
-                target: "_blank", rel: "noopener noreferrer",
-                style: {
-                  display: "flex", justifyContent: "space-between", alignItems: "center",
-                  padding: "8px 12px", background: "#0a0a0a", borderRadius: "4px",
-                  border: "1px solid #1a1a1a", textDecoration: "none",
-                }
-              },
-                React.createElement("span", { style: { color: "#ccc", fontSize: "0.82rem", fontFamily: "'DM Sans'" } }, v.t),
-                React.createElement("span", { style: { color: "#444", fontSize: "0.7rem", fontFamily: "'DM Mono'" } }, v.d || "")
-              );
-            })
-          )
-        ),
+              {directorNodes.map((d, i) => (
+                <line key={`l${i}`} x1="400" y1="300" x2={d.x} y2={d.y}
+                  stroke={hoveredNode === i ? "#e8a94644" : "#e8a94610"}
+                  strokeWidth={hoveredNode === i ? 1.5 : 0.5}
+                  strokeDasharray={hoveredNode === i ? "none" : "3 4"} />
+              ))}
 
-        // Selected genre highlight info
-        selectedGenre && React.createElement("div", {
-          style: {
-            textAlign: "center", padding: "16px", marginTop: "8px",
-            background: "#0d0b08", border: "1px solid #1a150d", borderRadius: "6px",
-          }
-        },
-          React.createElement("span", { style: {
-            fontFamily: "'DM Sans'", fontSize: "0.85rem",
-            color: GENRE_COLORS[selectedGenre] || "#888",
-          } }, "Filtro attivo: " + selectedGenre + " (" + genreDirs.length + " registi)"),
-          React.createElement("span", {
-            onClick: function() { setSelectedGenre(null); },
-            style: { color: "#555", cursor: "pointer", marginLeft: "12px", fontSize: "0.8rem" }
-          }, "✕ rimuovi filtro")
-        ),
+              {directorNodes.map((d, i) => (
+                <g key={i} onMouseEnter={() => setHoveredNode(i)}
+                  onMouseLeave={() => setHoveredNode(null)} style={{ cursor: "pointer" }}>
+                  <circle cx={d.x} cy={d.y} r={d.r}
+                    fill={hoveredNode === i ? "#1a1511" : "#0f0f0f"}
+                    stroke={hoveredNode === i ? "#e8a94666" : "#1a1a1a"}
+                    strokeWidth={hoveredNode === i ? 2 : 1} />
+                  <text x={d.x} y={d.y - 2} textAnchor="middle"
+                    fill={hoveredNode === i ? "#f0e6d2" : "#888"}
+                    fontFamily="DM Sans, sans-serif"
+                    fontSize={d.name.length > 16 ? "6.5" : "7.5"} fontWeight="600">
+                    {d.name}
+                  </text>
+                  <text x={d.x} y={d.y + 10} textAnchor="middle"
+                    fill={hoveredNode === i ? "#e8a946" : "#444"}
+                    fontFamily="DM Sans, sans-serif" fontSize="7">
+                    {d.video_count} video
+                  </text>
+                  {hoveredNode === i && d.genres && (
+                    <text x={d.x} y={d.y + 20} textAnchor="middle"
+                      fill="#666" fontFamily="DM Sans, sans-serif" fontSize="6">
+                      {d.genres.join(" · ")}
+                    </text>
+                  )}
+                </g>
+              ))}
+            </svg>
+          ) : (
+            <div style={{ textAlign: "center", padding: "40px", color: "#555" }}>
+              Nessun regista trovato nei dati
+            </div>
+          )}
+        </div>
+      )}
 
-        // Legend
-        !selectedDirector && !selectedGenre && React.createElement("div", {
-          style: {
-            textAlign: "center", padding: "12px",
-            fontFamily: "'DM Sans'", fontSize: "0.75rem", color: "#444",
-          }
-        }, "Clicca su un regista per vedere i suoi video · Clicca su un genere per filtrare")
-      ),
-
-      // === GENRE CONNECTIONS ===
-      selectedView === "genres" && React.createElement("div", {
-        style: { background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "40px" }
-      },
-        Object.entries(genreConnections).sort(function(a, b) { return b[1].length - a[1].length; }).map(function(entry) {
-          var genre = entry[0], dirs = entry[1];
-          return React.createElement("div", {
-            key: genre,
-            style: {
-              borderLeft: "3px solid " + (GENRE_COLORS[genre] || "#555"),
+      {/* === GENRE CONNECTIONS === */}
+      {selectedView === "genres" && (
+        <div style={{
+          background: "#0a0a0a", border: "1px solid #1a1a1a",
+          borderRadius: "8px", padding: "40px",
+        }}>
+          {Object.entries(genreConnections).map(([genre, dirs]) => (
+            <div key={genre} style={{
+              borderLeft: `3px solid ${GENRE_COLORS[genre] || "#555"}`,
               paddingLeft: "20px", marginBottom: "24px",
-            }
-          },
-            React.createElement("div", { style: {
-              fontFamily: "'Playfair Display', serif", fontSize: "1.2rem",
-              color: GENRE_COLORS[genre] || "#888", marginBottom: "10px",
-            } }, genre + " ", React.createElement("span", { style: { fontSize: "0.7rem", color: "#555" } }, "(" + dirs.length + " registi)")),
-            React.createElement("div", { style: { display: "flex", gap: "6px", flexWrap: "wrap" } },
-              dirs.map(function(d) {
-                var dir = directors.find(function(dd) { return dd.name === d; });
-                var otherGenres = dir ? dir.genres.filter(function(g) { return g !== genre; }) : [];
-                return React.createElement("div", {
-                  key: d,
-                  style: {
-                    background: (GENRE_COLORS[genre] || "#555") + "08",
-                    border: "1px solid " + (GENRE_COLORS[genre] || "#555") + "22",
-                    borderRadius: "4px", padding: "8px 12px",
-                  }
-                },
-                  React.createElement("div", { style: { fontFamily: "'DM Sans'", fontSize: "0.82rem", color: "#ccc" } }, d),
-                  dir && React.createElement("div", { style: {
-                    fontFamily: "'DM Mono'", fontSize: "0.65rem", color: "#555", marginTop: "2px",
-                  } }, dir.count + " video" + (otherGenres.length > 0 ? " · anche: " + otherGenres.join(", ") : ""))
+            }}>
+              <div style={{
+                fontFamily: "'Playfair Display', serif", fontSize: "1.2rem",
+                color: GENRE_COLORS[genre] || "#888", marginBottom: "10px",
+              }}>{genre} <span style={{ fontSize: "0.7rem", color: "#555" }}>({dirs.length} registi)</span></div>
+              <div style={{ display: "flex", gap: "6px", flexWrap: "wrap" }}>
+                {dirs.map(d => {
+                  const dir = directors.find(dd => dd.name === d);
+                  const otherGenres = dir?.genres?.filter(g => g !== genre) || [];
+                  return (
+                    <div key={d} style={{
+                      background: `${GENRE_COLORS[genre] || "#555"}08`,
+                      border: `1px solid ${GENRE_COLORS[genre] || "#555"}22`,
+                      borderRadius: "4px", padding: "8px 12px",
+                    }}>
+                      <div style={{
+                        fontFamily: "'DM Sans'", fontSize: "0.82rem", color: "#ccc",
+                      }}>{d}</div>
+                      {dir && (
+                        <div style={{
+                          fontFamily: "'DM Mono'", fontSize: "0.65rem", color: "#555", marginTop: "2px",
+                        }}>{dir.video_count} video{otherGenres.length > 0 ? ` · anche: ${otherGenres.join(", ")}` : ""}</div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+      )}
+
+      {/* === YEARLY DISTRIBUTION === */}
+      {selectedView === "years" && (
+        <div style={{
+          background: "#0a0a0a", border: "1px solid #1a1a1a",
+          borderRadius: "8px", padding: "40px",
+        }}>
+          <div style={{ maxWidth: 700, margin: "0 auto" }}>
+            {Object.entries(yearlyDist).sort().map(([year, count]) => {
+              const maxCount = Math.max(...Object.values(yearlyDist));
+              const pct = (count / maxCount) * 100;
+              return (
+                <div key={year} style={{
+                  display: "flex", alignItems: "center", gap: "12px",
+                  marginBottom: "10px",
+                }}>
+                  <span style={{
+                    fontFamily: "'DM Mono'", fontSize: "0.8rem",
+                    color: "#e8a946", minWidth: "40px",
+                  }}>{year}</span>
+                  <div style={{
+                    flex: 1, height: "20px", background: "#111",
+                    borderRadius: "3px", overflow: "hidden",
+                  }}>
+                    <div style={{
+                      width: `${pct}%`, height: "100%",
+                      background: `linear-gradient(90deg, #e8a946, #c45c4a)`,
+                      borderRadius: "3px", transition: "width 0.8s ease",
+                      display: "flex", alignItems: "center", justifyContent: "flex-end",
+                      paddingRight: "8px",
+                    }}>
+                      {pct > 15 && (
+                        <span style={{
+                          fontFamily: "'DM Mono'", fontSize: "0.65rem",
+                          color: "#0a0a0a", fontWeight: 700,
+                        }}>{count}</span>
+                      )}
+                    </div>
+                  </div>
+                  {pct <= 15 && (
+                    <span style={{
+                      fontFamily: "'DM Mono'", fontSize: "0.7rem", color: "#555",
+                    }}>{count}</span>
+                  )}
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* === CATEGORY DISTRIBUTION === */}
+      {selectedView === "categories" && (
+        <div style={{
+          background: "#0a0a0a", border: "1px solid #1a1a1a",
+          borderRadius: "8px", padding: "40px",
+        }}>
+          <div style={{ maxWidth: 600, margin: "0 auto" }}>
+            {Object.entries(catDist)
+              .sort((a, b) => b[1] - a[1])
+              .map(([catId, count]) => {
+                const meta = CATEGORY_META[catId] || CATEGORY_META.altro;
+                const total = Object.values(catDist).reduce((s, c) => s + c, 0);
+                const pct = (count / total) * 100;
+                return (
+                  <div key={catId} style={{ marginBottom: "14px" }}>
+                    <div style={{
+                      display: "flex", justifyContent: "space-between",
+                      marginBottom: "5px",
+                    }}>
+                      <span style={{
+                        fontFamily: "'DM Sans'", fontSize: "0.85rem", color: "#ccc",
+                      }}>{meta.icon} {catId}</span>
+                      <span style={{
+                        fontFamily: "'DM Mono'", fontSize: "0.75rem", color: "#666",
+                      }}>{count} • {pct.toFixed(1)}%</span>
+                    </div>
+                    <div style={{
+                      height: "6px", background: "#111", borderRadius: "3px", overflow: "hidden",
+                    }}>
+                      <div style={{
+                        width: `${pct}%`, height: "100%",
+                        background: meta.color, borderRadius: "3px",
+                        transition: "width 0.8s ease",
+                      }} />
+                    </div>
+                  </div>
                 );
-              })
-            )
-          );
-        })
-      ),
-
-      // === YEARLY DISTRIBUTION ===
-      selectedView === "years" && React.createElement("div", {
-        style: { background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "40px" }
-      },
-        React.createElement("div", { style: { maxWidth: 700, margin: "0 auto" } },
-          Object.entries(yearlyDist).sort().map(function(entry) {
-            var year = entry[0], count = entry[1];
-            var maxCount = Math.max.apply(null, Object.values(yearlyDist));
-            var pct = (count / maxCount) * 100;
-            return React.createElement("div", {
-              key: year,
-              style: { display: "flex", alignItems: "center", gap: "12px", marginBottom: "10px" }
-            },
-              React.createElement("span", { style: { fontFamily: "'DM Mono'", fontSize: "0.8rem", color: "#e8a946", minWidth: "40px" } }, year),
-              React.createElement("div", { style: { flex: 1, height: "22px", background: "#111", borderRadius: "3px", overflow: "hidden" } },
-                React.createElement("div", { style: {
-                  width: pct + "%", height: "100%",
-                  background: "linear-gradient(90deg, #e8a946, #c45c4a)",
-                  borderRadius: "3px", display: "flex", alignItems: "center",
-                  justifyContent: "flex-end", paddingRight: "8px",
-                  transition: "width 0.8s ease",
-                } },
-                  pct > 15 && React.createElement("span", { style: {
-                    fontFamily: "'DM Mono'", fontSize: "0.65rem", color: "#0a0a0a", fontWeight: 700,
-                  } }, count)
-                )
-              ),
-              pct <= 15 && React.createElement("span", { style: { fontFamily: "'DM Mono'", fontSize: "0.7rem", color: "#555" } }, count)
-            );
-          })
-        )
-      ),
-
-      // === CATEGORY DISTRIBUTION ===
-      selectedView === "categories" && React.createElement("div", {
-        style: { background: "#0a0a0a", border: "1px solid #1a1a1a", borderRadius: "8px", padding: "40px" }
-      },
-        React.createElement("div", { style: { maxWidth: 600, margin: "0 auto" } },
-          Object.entries(catDist).sort(function(a, b) { return b[1] - a[1]; }).map(function(entry) {
-            var catId = entry[0], count = entry[1];
-            var meta = CATEGORY_META[catId] || CATEGORY_META.altro;
-            var total = Object.values(catDist).reduce(function(s, c) { return s + c; }, 0);
-            var pct = (count / total) * 100;
-            return React.createElement("div", { key: catId, style: { marginBottom: "14px" } },
-              React.createElement("div", { style: { display: "flex", justifyContent: "space-between", marginBottom: "5px" } },
-                React.createElement("span", { style: { fontFamily: "'DM Sans'", fontSize: "0.85rem", color: "#ccc" } },
-                  (meta.icon || "📽️") + " " + (meta.label || catId)),
-                React.createElement("span", { style: { fontFamily: "'DM Mono'", fontSize: "0.75rem", color: "#666" } },
-                  count + " · " + pct.toFixed(1) + "%")
-              ),
-              React.createElement("div", { style: { height: "6px", background: "#111", borderRadius: "3px", overflow: "hidden" } },
-                React.createElement("div", { style: {
-                  width: pct + "%", height: "100%", background: meta.color,
-                  borderRadius: "3px", transition: "width 0.8s ease",
-                } })
-              )
-            );
-          })
-        )
-      )
-    )
+              })}
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 

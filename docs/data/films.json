@@ -1,0 +1,1204 @@
+{
+  "films": [
+    {
+      "title": "Strange Days",
+      "count": 3
+    },
+    {
+      "title": "Faust",
+      "count": 3
+    },
+    {
+      "title": "It Follows",
+      "count": 2
+    },
+    {
+      "title": "The Witch",
+      "count": 2
+    },
+    {
+      "title": "Superman",
+      "count": 2
+    },
+    {
+      "title": "Taxi Driver",
+      "count": 2
+    },
+    {
+      "title": "Distretto 13 - Le brigate della morte",
+      "count": 2
+    },
+    {
+      "title": "Dracula",
+      "count": 2
+    },
+    {
+      "title": "Il Sospetto",
+      "count": 2
+    },
+    {
+      "title": "Nemico Pubblico",
+      "count": 2
+    },
+    {
+      "title": "Psycho",
+      "count": 2
+    },
+    {
+      "title": "Spring Breakers",
+      "count": 2
+    },
+    {
+      "title": "Lettere da Iwo Jima",
+      "count": 2
+    },
+    {
+      "title": "C'eravamo tanto amati",
+      "count": 2
+    },
+    {
+      "title": "Django",
+      "count": 2
+    },
+    {
+      "title": "Mortal Kombat",
+      "count": 2
+    },
+    {
+      "title": "Antichrist",
+      "count": 2
+    },
+    {
+      "title": "Robocop",
+      "count": 2
+    },
+    {
+      "title": "Eaten Back to Life",
+      "count": 2
+    },
+    {
+      "title": "Maniac",
+      "count": 2
+    },
+    {
+      "title": "Hellboy",
+      "count": 2
+    },
+    {
+      "title": "La Mummia",
+      "count": 2
+    },
+    {
+      "title": "Valzer con Bashir",
+      "count": 2
+    },
+    {
+      "title": "Cure",
+      "count": 2
+    },
+    {
+      "title": "Leviathan",
+      "count": 2
+    },
+    {
+      "title": "Grace",
+      "count": 2
+    },
+    {
+      "title": "La Cosa",
+      "count": 2
+    },
+    {
+      "title": "Disintegration",
+      "count": 2
+    },
+    {
+      "title": "The Doors",
+      "count": 2
+    },
+    {
+      "title": "Kramer contro Kramer",
+      "count": 2
+    },
+    {
+      "title": "Revolver",
+      "count": 2
+    },
+    {
+      "title": "Terrifier",
+      "count": 2
+    },
+    {
+      "title": "Insomnia",
+      "count": 2
+    },
+    {
+      "title": "Pinocchio",
+      "count": 2
+    },
+    {
+      "title": "Crimen",
+      "count": 2
+    },
+    {
+      "title": "Ghost in the Shell",
+      "count": 2
+    },
+    {
+      "title": "Nebraska",
+      "count": 2
+    },
+    {
+      "title": "Changeling",
+      "count": 2
+    },
+    {
+      "title": "Godzilla",
+      "count": 2
+    },
+    {
+      "title": "Gummo",
+      "count": 2
+    },
+    {
+      "title": "A sangue freddo",
+      "count": 2
+    },
+    {
+      "title": "Inferno",
+      "count": 2
+    },
+    {
+      "title": "Sabrina",
+      "count": 2
+    },
+    {
+      "title": "Nail",
+      "count": 2
+    },
+    {
+      "title": "Nope",
+      "count": 2
+    },
+    {
+      "title": "Scream",
+      "count": 2
+    },
+    {
+      "title": "Veteran",
+      "count": 2
+    },
+    {
+      "title": "Giovane e bella",
+      "count": 2
+    },
+    {
+      "title": "La maschera di cera",
+      "count": 2
+    },
+    {
+      "title": "Exodus",
+      "count": 2
+    },
+    {
+      "title": "The Hole",
+      "count": 2
+    },
+    {
+      "title": "Rapina a mano armata",
+      "count": 2
+    },
+    {
+      "title": "Closer",
+      "count": 2
+    },
+    {
+      "title": "Under the Midnight Sun",
+      "count": 2
+    },
+    {
+      "title": "Elvis",
+      "count": 2
+    },
+    {
+      "title": "Aladdin",
+      "count": 2
+    },
+    {
+      "title": "La casa",
+      "count": 2
+    },
+    {
+      "title": "Il velo dipinto",
+      "count": 2
+    },
+    {
+      "title": "Lilo & Stitch",
+      "count": 2
+    },
+    {
+      "title": "Brave New World",
+      "count": 2
+    },
+    {
+      "title": "Brother",
+      "count": 2
+    },
+    {
+      "title": "Le buone stelle - Broker",
+      "count": 2
+    },
+    {
+      "title": "Ballerina",
+      "count": 2
+    },
+    {
+      "title": "Mantis",
+      "count": 2
+    },
+    {
+      "title": "Premonitions",
+      "count": 1
+    },
+    {
+      "title": "Creed",
+      "count": 1
+    },
+    {
+      "title": "Orgoglio, Pregiudizio e Zombie",
+      "count": 1
+    },
+    {
+      "title": "The Conjuring： Il Caso Enfield",
+      "count": 1
+    },
+    {
+      "title": "Peter Jackson",
+      "count": 1
+    },
+    {
+      "title": "David Fincher",
+      "count": 1
+    },
+    {
+      "title": "Highlander⧸Collateral⧸IT",
+      "count": 1
+    },
+    {
+      "title": "Ballata Macabra",
+      "count": 1
+    },
+    {
+      "title": "Il Tocco del Male",
+      "count": 1
+    },
+    {
+      "title": "Cemento Armato",
+      "count": 1
+    },
+    {
+      "title": "Cadaveri Eccellenti",
+      "count": 1
+    },
+    {
+      "title": "La parola ai Giurati",
+      "count": 1
+    },
+    {
+      "title": "The Good Son",
+      "count": 1
+    },
+    {
+      "title": "Fabulous Muscles",
+      "count": 1
+    },
+    {
+      "title": "Vestito per Uccidere",
+      "count": 1
+    },
+    {
+      "title": "Elephant",
+      "count": 1
+    },
+    {
+      "title": "Strade Perdute",
+      "count": 1
+    },
+    {
+      "title": "L' Imbalsamatore",
+      "count": 1
+    },
+    {
+      "title": "Trappola di Cristallo",
+      "count": 1
+    },
+    {
+      "title": "Una Cena Quasi Perfetta",
+      "count": 1
+    },
+    {
+      "title": "Saint Ange",
+      "count": 1
+    },
+    {
+      "title": "The Truman Show",
+      "count": 1
+    },
+    {
+      "title": "Drums and Wires",
+      "count": 1
+    },
+    {
+      "title": "Desperado",
+      "count": 1
+    },
+    {
+      "title": "Smetto Quando Voglio",
+      "count": 1
+    },
+    {
+      "title": "Slevin",
+      "count": 1
+    },
+    {
+      "title": "Mommy's Little Monster",
+      "count": 1
+    },
+    {
+      "title": "A Beautiful Mind",
+      "count": 1
+    },
+    {
+      "title": "Porco Rosso",
+      "count": 1
+    },
+    {
+      "title": "Operation： Mindcrime",
+      "count": 1
+    },
+    {
+      "title": "Alice",
+      "count": 1
+    },
+    {
+      "title": "Revolutionary Road",
+      "count": 1
+    },
+    {
+      "title": "Psychocandy",
+      "count": 1
+    },
+    {
+      "title": "Heat - La Sfida",
+      "count": 1
+    },
+    {
+      "title": "The Manchurian Candidate",
+      "count": 1
+    },
+    {
+      "title": "Il Ritorno dei Morti Viventi",
+      "count": 1
+    },
+    {
+      "title": "Sabotage",
+      "count": 1
+    },
+    {
+      "title": "Prima di Domani",
+      "count": 1
+    },
+    {
+      "title": "Salò o le 120 giornate di Sodoma",
+      "count": 1
+    },
+    {
+      "title": "Fa' la cosa giusta",
+      "count": 1
+    },
+    {
+      "title": "The Orphanage",
+      "count": 1
+    },
+    {
+      "title": "Freaked (Sgorbi)",
+      "count": 1
+    },
+    {
+      "title": "Trout Mask Replica",
+      "count": 1
+    },
+    {
+      "title": "1990 I Guerrrieri del Bronx",
+      "count": 1
+    },
+    {
+      "title": "I Soliti Sospetti",
+      "count": 1
+    },
+    {
+      "title": "The Butterfly Effect",
+      "count": 1
+    },
+    {
+      "title": "Le avventure acquatiche di Steve Zissou",
+      "count": 1
+    },
+    {
+      "title": "The Big Kahuna",
+      "count": 1
+    },
+    {
+      "title": "La Tomba delle Lucciole",
+      "count": 1
+    },
+    {
+      "title": "Miracolo a Milano",
+      "count": 1
+    },
+    {
+      "title": "L' Ora del Lupo",
+      "count": 1
+    },
+    {
+      "title": "Akira",
+      "count": 1
+    },
+    {
+      "title": "Cane di Paglia",
+      "count": 1
+    },
+    {
+      "title": "Casino Royale",
+      "count": 1
+    },
+    {
+      "title": "Mission： Impossible",
+      "count": 1
+    },
+    {
+      "title": "Cruising",
+      "count": 1
+    },
+    {
+      "title": "Il Grande Freddo",
+      "count": 1
+    },
+    {
+      "title": "Dead Man's Shoes",
+      "count": 1
+    },
+    {
+      "title": "Quadrophenia",
+      "count": 1
+    },
+    {
+      "title": "Licensed to Ill",
+      "count": 1
+    },
+    {
+      "title": "La Casa delle Bambole - Ghostland",
+      "count": 1
+    },
+    {
+      "title": "Essere John Malkovich",
+      "count": 1
+    },
+    {
+      "title": "Vampyros Lesbos",
+      "count": 1
+    },
+    {
+      "title": "Star Wars-Gli ultimi Jedi",
+      "count": 1
+    },
+    {
+      "title": "lo Spaventapasseri",
+      "count": 1
+    },
+    {
+      "title": "Io sono Li",
+      "count": 1
+    },
+    {
+      "title": "Spiderland",
+      "count": 1
+    },
+    {
+      "title": "Rage Against The Machine",
+      "count": 1
+    },
+    {
+      "title": "Marrakech Express",
+      "count": 1
+    },
+    {
+      "title": "Mulholland Drive",
+      "count": 1
+    },
+    {
+      "title": "Ragazzi Perduti",
+      "count": 1
+    },
+    {
+      "title": "L' Avvocato del Diavolo",
+      "count": 1
+    },
+    {
+      "title": "“Reign In Blood”",
+      "count": 1
+    },
+    {
+      "title": "Antropophagus",
+      "count": 1
+    },
+    {
+      "title": "La Principessa Mononoke",
+      "count": 1
+    },
+    {
+      "title": "The Woodsman",
+      "count": 1
+    },
+    {
+      "title": "El Dorado",
+      "count": 1
+    },
+    {
+      "title": "Cabal",
+      "count": 1
+    },
+    {
+      "title": "Sandinista!",
+      "count": 1
+    },
+    {
+      "title": "Hellraiser",
+      "count": 1
+    },
+    {
+      "title": "JFK -",
+      "count": 1
+    },
+    {
+      "title": "Humbug",
+      "count": 1
+    },
+    {
+      "title": "Kind of Blue",
+      "count": 1
+    },
+    {
+      "title": "Lo spirito continua",
+      "count": 1
+    },
+    {
+      "title": "Stargate",
+      "count": 1
+    },
+    {
+      "title": "Iron Maiden",
+      "count": 1
+    },
+    {
+      "title": "Amityville：Dollhouse",
+      "count": 1
+    },
+    {
+      "title": "Paz!",
+      "count": 1
+    },
+    {
+      "title": "： ＂Nightmare 3",
+      "count": 1
+    },
+    {
+      "title": "Una pura formalità",
+      "count": 1
+    },
+    {
+      "title": "American Beauty",
+      "count": 1
+    },
+    {
+      "title": "Love Exposure",
+      "count": 1
+    },
+    {
+      "title": "Dio contro il Diavolo",
+      "count": 1
+    },
+    {
+      "title": "Dune",
+      "count": 1
+    },
+    {
+      "title": "Vampires",
+      "count": 1
+    },
+    {
+      "title": "All That Jazz",
+      "count": 1
+    },
+    {
+      "title": "Bloody Kisses",
+      "count": 1
+    },
+    {
+      "title": "Morte a Venenzia",
+      "count": 1
+    },
+    {
+      "title": "The Aviator",
+      "count": 1
+    },
+    {
+      "title": "Mon Roi - Il mio Re",
+      "count": 1
+    },
+    {
+      "title": "Tin Drum",
+      "count": 1
+    },
+    {
+      "title": "Balla coi Lupi",
+      "count": 1
+    },
+    {
+      "title": "Il Castello Errante di Howl",
+      "count": 1
+    },
+    {
+      "title": "The Hitcher",
+      "count": 1
+    },
+    {
+      "title": "L'Ascensore",
+      "count": 1
+    },
+    {
+      "title": "Labyrinth",
+      "count": 1
+    },
+    {
+      "title": "Lasciami Entrare",
+      "count": 1
+    },
+    {
+      "title": "Before and After Science",
+      "count": 1
+    },
+    {
+      "title": "Adore",
+      "count": 1
+    },
+    {
+      "title": "Una lama nel buio",
+      "count": 1
+    },
+    {
+      "title": "El Topo",
+      "count": 1
+    },
+    {
+      "title": "Gran Torino",
+      "count": 1
+    },
+    {
+      "title": "Manhunter",
+      "count": 1
+    },
+    {
+      "title": "Nature Unveiled",
+      "count": 1
+    },
+    {
+      "title": "Found",
+      "count": 1
+    },
+    {
+      "title": "Tim",
+      "count": 1
+    },
+    {
+      "title": "The Illusionist",
+      "count": 1
+    },
+    {
+      "title": "Easy Girl",
+      "count": 1
+    },
+    {
+      "title": "Sonatine",
+      "count": 1
+    },
+    {
+      "title": "Animali Fantastici e dove trovarli",
+      "count": 1
+    },
+    {
+      "title": "L' Atalante",
+      "count": 1
+    },
+    {
+      "title": "Ninotchka",
+      "count": 1
+    },
+    {
+      "title": "Guardians",
+      "count": 1
+    },
+    {
+      "title": "La Stanza delle Farfalle",
+      "count": 1
+    },
+    {
+      "title": "Rain Man",
+      "count": 1
+    },
+    {
+      "title": "： Lupo Solitario",
+      "count": 1
+    },
+    {
+      "title": "： The Elephant Man",
+      "count": 1
+    },
+    {
+      "title": "Ghost stories",
+      "count": 1
+    },
+    {
+      "title": "Discovery",
+      "count": 1
+    },
+    {
+      "title": "From Hell",
+      "count": 1
+    },
+    {
+      "title": "Good",
+      "count": 1
+    },
+    {
+      "title": "Ritorno al Futuro",
+      "count": 1
+    },
+    {
+      "title": "The Island",
+      "count": 1
+    },
+    {
+      "title": "： ＂Physical Graffiti",
+      "count": 1
+    },
+    {
+      "title": "： ＂Symbolic",
+      "count": 1
+    },
+    {
+      "title": "： Smoke",
+      "count": 1
+    },
+    {
+      "title": "： Lust for Life",
+      "count": 1
+    },
+    {
+      "title": "American History X",
+      "count": 1
+    },
+    {
+      "title": "Rusty Il Selvaggio",
+      "count": 1
+    },
+    {
+      "title": "： Predators",
+      "count": 1
+    },
+    {
+      "title": "Fantozzi",
+      "count": 1
+    },
+    {
+      "title": "Occhio Indiscreto",
+      "count": 1
+    },
+    {
+      "title": "Hardware",
+      "count": 1
+    },
+    {
+      "title": "Maggot Brain",
+      "count": 1
+    },
+    {
+      "title": "Amici Miei",
+      "count": 1
+    },
+    {
+      "title": "Ender's Game",
+      "count": 1
+    },
+    {
+      "title": "V per Vendetta",
+      "count": 1
+    },
+    {
+      "title": "Dead Man Walking",
+      "count": 1
+    },
+    {
+      "title": "L'Ultimo Samurai",
+      "count": 1
+    },
+    {
+      "title": "Dominion： Prequel to the Exorcist",
+      "count": 1
+    },
+    {
+      "title": "Jimmy Hollywood",
+      "count": 1
+    },
+    {
+      "title": "Il cuoco,il ladro,sua moglie e l'amante",
+      "count": 1
+    },
+    {
+      "title": "I sogni segreti di Walter Mitty",
+      "count": 1
+    },
+    {
+      "title": "Magdalene",
+      "count": 1
+    },
+    {
+      "title": "Il Bi e il Ba",
+      "count": 1
+    },
+    {
+      "title": "Turn Blue",
+      "count": 1
+    },
+    {
+      "title": "Cosmo's Factory",
+      "count": 1
+    },
+    {
+      "title": "Flesh Gordon",
+      "count": 1
+    },
+    {
+      "title": "Before Sunset-Prima del Tramonto",
+      "count": 1
+    },
+    {
+      "title": "Z - L' Orgia del Potere",
+      "count": 1
+    },
+    {
+      "title": "Il Tagliagole",
+      "count": 1
+    },
+    {
+      "title": "Il gabinetto del dottor Caligari",
+      "count": 1
+    },
+    {
+      "title": "I Compagni",
+      "count": 1
+    },
+    {
+      "title": "Le armonie di Werckmeister",
+      "count": 1
+    },
+    {
+      "title": "： I Pugni in Tasca",
+      "count": 1
+    },
+    {
+      "title": "Ubriaco d'Amore",
+      "count": 1
+    },
+    {
+      "title": "Kid A",
+      "count": 1
+    },
+    {
+      "title": "Due giorni, una notte",
+      "count": 1
+    },
+    {
+      "title": "Romeo + Giulietta",
+      "count": 1
+    },
+    {
+      "title": "Super",
+      "count": 1
+    },
+    {
+      "title": "964 Pinocchio",
+      "count": 1
+    },
+    {
+      "title": "Io non sono qui",
+      "count": 1
+    },
+    {
+      "title": "Around the Fur",
+      "count": 1
+    },
+    {
+      "title": "La grande abbuffata",
+      "count": 1
+    },
+    {
+      "title": "Allucinazione Perversa",
+      "count": 1
+    },
+    {
+      "title": "Don Camillo",
+      "count": 1
+    },
+    {
+      "title": "Guida per riconoscere i tuoi santi",
+      "count": 1
+    },
+    {
+      "title": "Home",
+      "count": 1
+    },
+    {
+      "title": "Different Class",
+      "count": 1
+    },
+    {
+      "title": "Sleepers",
+      "count": 1
+    },
+    {
+      "title": "Victoria",
+      "count": 1
+    },
+    {
+      "title": "Ocean Songs",
+      "count": 1
+    },
+    {
+      "title": "： Una Storia Vera",
+      "count": 1
+    },
+    {
+      "title": "Cigarette Burns",
+      "count": 1
+    },
+    {
+      "title": "Tron Legacy",
+      "count": 1
+    },
+    {
+      "title": "Napoleon Dynamite",
+      "count": 1
+    },
+    {
+      "title": "Richard D. James Album",
+      "count": 1
+    },
+    {
+      "title": "： Brood",
+      "count": 1
+    },
+    {
+      "title": "： Dogville",
+      "count": 1
+    },
+    {
+      "title": "Doppia Personalità",
+      "count": 1
+    },
+    {
+      "title": "Fabrizio De Andrè (Indiano) -",
+      "count": 1
+    },
+    {
+      "title": "Spiriti nelle Tenebre",
+      "count": 1
+    },
+    {
+      "title": "L'Esorcista",
+      "count": 1
+    },
+    {
+      "title": "The Raid",
+      "count": 1
+    },
+    {
+      "title": "IT",
+      "count": 1
+    },
+    {
+      "title": "Il Gigante di Ferro",
+      "count": 1
+    },
+    {
+      "title": "Il Bambino che scoprì il Mondo",
+      "count": 1
+    },
+    {
+      "title": "Remain in Light",
+      "count": 1
+    },
+    {
+      "title": "Il Settimo Sigillo",
+      "count": 1
+    },
+    {
+      "title": "YS",
+      "count": 1
+    },
+    {
+      "title": "Toto",
+      "count": 1
+    },
+    {
+      "title": "Quantum of Solace",
+      "count": 1
+    },
+    {
+      "title": "Big Eyes",
+      "count": 1
+    },
+    {
+      "title": "Aguirre, furore di Dio",
+      "count": 1
+    },
+    {
+      "title": "Wall-e",
+      "count": 1
+    },
+    {
+      "title": "Milano Odia： La polizia non può sparare",
+      "count": 1
+    },
+    {
+      "title": "Jolly Blu",
+      "count": 1
+    },
+    {
+      "title": "Il treno per il Darjeeling",
+      "count": 1
+    },
+    {
+      "title": "L'Armata Brancaleone",
+      "count": 1
+    },
+    {
+      "title": "L'uovo del serpente",
+      "count": 1
+    },
+    {
+      "title": "Stalker",
+      "count": 1
+    },
+    {
+      "title": "Oculus",
+      "count": 1
+    },
+    {
+      "title": "Monolith",
+      "count": 1
+    },
+    {
+      "title": "Il Colpevole",
+      "count": 1
+    },
+    {
+      "title": "Air America",
+      "count": 1
+    },
+    {
+      "title": "L'odio",
+      "count": 1
+    },
+    {
+      "title": "Kontroll",
+      "count": 1
+    },
+    {
+      "title": "Missione in Manciuria",
+      "count": 1
+    },
+    {
+      "title": "Berlin Calling",
+      "count": 1
+    },
+    {
+      "title": "The Others",
+      "count": 1
+    },
+    {
+      "title": "Sbatti il mostro in prima pagina",
+      "count": 1
+    },
+    {
+      "title": "Ogro",
+      "count": 1
+    },
+    {
+      "title": "The Departed",
+      "count": 1
+    },
+    {
+      "title": "Bumblebee",
+      "count": 1
+    },
+    {
+      "title": "Dramma della gelosia",
+      "count": 1
+    },
+    {
+      "title": "Il Cattivo Tenente",
+      "count": 1
+    },
+    {
+      "title": "Ma come si può uccidere un bambino？",
+      "count": 1
+    },
+    {
+      "title": "Hulk",
+      "count": 1
+    },
+    {
+      "title": "L'Ultimo Spettacolo",
+      "count": 1
+    },
+    {
+      "title": "Mystic River",
+      "count": 1
+    },
+    {
+      "title": "Vivere e Morire a Los Angeles",
+      "count": 1
+    },
+    {
+      "title": "Sedotta e Abbandonata",
+      "count": 1
+    },
+    {
+      "title": "Spider-Man： Un Nuovo Universo",
+      "count": 1
+    },
+    {
+      "title": "Taxxi",
+      "count": 1
+    },
+    {
+      "title": "Old Boy",
+      "count": 1
+    },
+    {
+      "title": "Ricomincio da tre",
+      "count": 1
+    }
+  ]
+}

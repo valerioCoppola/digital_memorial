@@ -4,7 +4,7 @@
       "name": "Martin Scorsese",
       "count": 19,
       "genres": [
-        "Auteur",
+        "Autore",
         "Crime"
       ],
       "videos": [
@@ -109,7 +109,8 @@
       "name": "Alfred Hitchcock",
       "count": 19,
       "genres": [
-        "Non classificato"
+        "Thriller",
+        "Classico"
       ],
       "videos": [
         {
@@ -215,7 +216,7 @@
       "genres": [
         "Horror",
         "Giallo",
-        "Italian"
+        "Italiano"
       ],
       "videos": [
         {
@@ -309,9 +310,9 @@
       "name": "Steven Spielberg",
       "count": 15,
       "genres": [
-        "Auteur",
+        "Autore",
         "Sci-Fi",
-        "Adventure"
+        "Avventura"
       ],
       "videos": [
         {
@@ -397,7 +398,7 @@
       "genres": [
         "Horror",
         "Giallo",
-        "Italian"
+        "Italiano"
       ],
       "videos": [
         {
@@ -483,7 +484,7 @@
       "genres": [
         "Horror",
         "Sci-Fi",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -568,7 +569,7 @@
       "count": 14,
       "genres": [
         "Fantasy",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -647,7 +648,7 @@
       "name": "Stanley Kubrick",
       "count": 13,
       "genres": [
-        "Auteur",
+        "Autore",
         "Sci-Fi",
         "Horror"
       ],
@@ -724,8 +725,7 @@
       "count": 13,
       "genres": [
         "Horror",
-        "Cult",
-        "Comedy"
+        "Cult"
       ],
       "videos": [
         {
@@ -875,7 +875,9 @@
       "name": "Takashi Miike",
       "count": 12,
       "genres": [
-        "Non classificato"
+        "Horror",
+        "Orientale",
+        "Cult"
       ],
       "videos": [
         {
@@ -941,12 +943,77 @@
       ]
     },
     {
+      "name": "Hayao Miyazaki",
+      "count": 11,
+      "genres": [
+        "Animazione",
+        "Fantasy"
+      ],
+      "videos": [
+        {
+          "id": "7UCLOvALAkc",
+          "t": "Patreon： ＂Porco Rosso＂ (1992) di Hayao Miyazaki - MInirece richista da Dario Moccia",
+          "d": "2018-10-12"
+        },
+        {
+          "id": "mw2ypVWZSp8",
+          "t": "Patreon： ＂La Principessa Mononoke＂ (1997) di Hayao Miyazaki - Minirece richiesta da Davide Mazzea",
+          "d": "2019-01-23"
+        },
+        {
+          "id": "CUGiTOVAkf0",
+          "t": "Patreon： Nausicaä della Valle del vento (1984) di Hayao Miyazaki - Minirece richiesta da Nicola",
+          "d": "2020-01-26"
+        },
+        {
+          "id": "RVxmrsZWTF0",
+          "t": "Patreon： Il mio vicino Totoro (1988) di Hayao Miyazaki - Mini richiesta da Alessandro Giacomelli",
+          "d": "2020-12-30"
+        },
+        {
+          "id": "15XKz1BZDR0",
+          "t": "Patreon： La città incantata (2001) di Hayao Miyazaki - Minirece richiesta da Fabrizio Giovanardi",
+          "d": "2021-04-25"
+        },
+        {
+          "id": "92TPpDdTeYM",
+          "t": "Patreon： Si alza il vento (2013) di Hayao Miyazaki - Minirece rihciesta da Giovanni D'Agostino",
+          "d": "2022-02-11"
+        },
+        {
+          "id": "qidpdOLCtOY",
+          "t": "Patreon： Kiki - Consegne a domicilio (1989) di Hayao Miyazaki -  Richiesta da Giovanni D'Agostino",
+          "d": "2023-01-23"
+        },
+        {
+          "id": "Ni6PyCNm7KU",
+          "t": "Patreon： Ponyo sulla scogliera (2008) di Hayao Miyazaki - Minirece richiesta da Francesco Parca",
+          "d": "2023-05-09"
+        },
+        {
+          "id": "D5aXk5ckZDE",
+          "t": "Frusciante al Cinema： Il ragazzo e l'airone (2023) di Hayao Miyazaki (Gennaio 2024)",
+          "d": "2024-01-02"
+        },
+        {
+          "id": "P3eRSPEWe70",
+          "t": "Patreon： Laputa - Il Castello nel cielo (1986) di Hayao Miyazaki - Richiesta da Mr.Fellosborrobello",
+          "d": "2025-07-04"
+        },
+        {
+          "id": "Wx3kx9stsqw",
+          "t": "Patreon： Conan - Il ragazzo del futuro (1978) di Hayao Miyazaki - Mini per Tonyart, Cipriano Damenti",
+          "d": "2025-09-20"
+        }
+      ]
+    },
+    {
       "name": "Guillermo del Toro",
       "count": 11,
       "genres": [
         "Horror",
         "Fantasy",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -1010,8 +1077,8 @@
       "name": "Woody Allen",
       "count": 10,
       "genres": [
-        "Auteur",
-        "Comedy"
+        "Autore",
+        "Commedia"
       ],
       "videos": [
         {
@@ -1067,10 +1134,72 @@
       ]
     },
     {
+      "name": "Oliver Stone",
+      "count": 10,
+      "genres": [
+        "Drammatico",
+        "Autore"
+      ],
+      "videos": [
+        {
+          "id": "EvZfMb6b5sI",
+          "t": "Patreon： Ogni Maledetta Domenica (USA 2000) di Oliver Stone - Minirece richiesta da Davide Mele",
+          "d": "2019-08-02"
+        },
+        {
+          "id": "Ac8xQhubiyI",
+          "t": "Patreon： Platoon (1986) di Oliver Stone - Minirece richiesta da Cipriano Damenti",
+          "d": "2020-10-10"
+        },
+        {
+          "id": "p6L2Ch3aXWs",
+          "t": "Patreon： Talk Radio (1988) di Oliver Stone - Minirece richiesta da Federico Cattozzi",
+          "d": "2021-01-16"
+        },
+        {
+          "id": "Qhjp3otLb1I",
+          "t": "Patreon： Gli intrighi del potere - Nixon (1995) di Oliver Stone - Minirece richiesta da Davide Leo",
+          "d": "2021-03-27"
+        },
+        {
+          "id": "eEqj0A-I9FI",
+          "t": "Patreon： The Doors (1991) di Oliver Stone - Minirece richiesta da Alberto Giordano",
+          "d": "2021-04-18"
+        },
+        {
+          "id": "SHqyfpisOxg",
+          "t": "Patreon： U Turn - Inversione di marcia (1997) di Oliver Stone - Mini richiesta da Giacomo Guerrini",
+          "d": "2021-07-31"
+        },
+        {
+          "id": "-uC4YRwB3AQ",
+          "t": "Patreon： Alexander (2005) di Oliver Stone - Minirece richiesta da Andy Bz",
+          "d": "2021-12-12"
+        },
+        {
+          "id": "Y9K9ndXOhgE",
+          "t": "Patreon： Salvador (1986) di Oliver Stone - Minirece richiesta da Dario Bagatin",
+          "d": "2022-10-27"
+        },
+        {
+          "id": "e1zEepE11J8",
+          "t": "Patreon： Nato il quattro luglio (1989) di Oliver Stone - Minirece richiesta da  Damian ilPappagallo",
+          "d": "2023-08-28"
+        },
+        {
+          "id": "FK5c39eMxl8",
+          "t": "Patreon： Wall Street (1987) di Oliver Stone - Minirece richiesta da Filippo De Maria",
+          "d": "2023-10-12"
+        }
+      ]
+    },
+    {
       "name": "Brian De Palma",
       "count": 10,
       "genres": [
-        "Non classificato"
+        "Thriller",
+        "Horror",
+        "Crime"
       ],
       "videos": [
         {
@@ -1130,7 +1259,7 @@
       "count": 10,
       "genres": [
         "Sci-Fi",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -1189,7 +1318,9 @@
       "name": "Umberto Lenzi",
       "count": 10,
       "genres": [
-        "Non classificato"
+        "Horror",
+        "Italiano",
+        "Cult"
       ],
       "videos": [
         {
@@ -1249,7 +1380,7 @@
       "count": 9,
       "genres": [
         "Horror",
-        "Comedy",
+        "Commedia",
         "Cult"
       ],
       "videos": [
@@ -1305,7 +1436,7 @@
       "count": 9,
       "genres": [
         "Sci-Fi",
-        "Action"
+        "Azione"
       ],
       "videos": [
         {
@@ -1359,7 +1490,8 @@
       "name": "Sergio Martino",
       "count": 9,
       "genres": [
-        "Non classificato"
+        "Giallo",
+        "Italiano"
       ],
       "videos": [
         {
@@ -1413,7 +1545,7 @@
       "name": "Quentin Tarantino",
       "count": 9,
       "genres": [
-        "Auteur",
+        "Autore",
         "Crime",
         "Cult"
       ],
@@ -1471,7 +1603,7 @@
       "genres": [
         "Horror",
         "Giallo",
-        "Italian"
+        "Italiano"
       ],
       "videos": [
         {
@@ -1525,7 +1657,9 @@
       "name": "Pupi Avati",
       "count": 9,
       "genres": [
-        "Non classificato"
+        "Horror",
+        "Italiano",
+        "Autore"
       ],
       "videos": [
         {
@@ -1579,7 +1713,8 @@
       "name": "Paul Verhoeven",
       "count": 9,
       "genres": [
-        "Non classificato"
+        "Sci-Fi",
+        "Cult"
       ],
       "videos": [
         {
@@ -1630,10 +1765,159 @@
       ]
     },
     {
+      "name": "Sidney Lumet",
+      "count": 8,
+      "genres": [
+        "Drammatico",
+        "Classico",
+        "Autore"
+      ],
+      "videos": [
+        {
+          "id": "_228nSGdNX0",
+          "t": "Patreon： La parola ai Giurati (1957) di Sidney Lumet - Minirece richiesta da Claudio Garau",
+          "d": "2018-09-17"
+        },
+        {
+          "id": "DwMa4UjhiNU",
+          "t": "Patreon： Quel pomeriggio di un giorno da cani (1975) Sidney Lumet",
+          "d": "2019-11-17"
+        },
+        {
+          "id": "aiK1X0D1EDk",
+          "t": "Patreon： ＂Equus＂ (1977) di Sidney Lumet - Minirece richiesta da Nicola",
+          "d": "2020-03-06"
+        },
+        {
+          "id": "iIAXFMGtGjE",
+          "t": "Patreon： Quinto Potere (1976) di Sidney Lumet - Minirece richiesta da Alessandro Stisci",
+          "d": "2021-01-03"
+        },
+        {
+          "id": "f179QnIgHRU",
+          "t": "Patreon： Assassinio sull'Orient Express (1974) di Sidney Lumet - Mini richiesta da Enrico Raspadori",
+          "d": "2021-02-03"
+        },
+        {
+          "id": "JpCzGwXDt5I",
+          "t": "Patreon： L'uomo del banco dei pegni (1964) di Sidney Lumet - Mini richiesta da Matteo Degli Angeli",
+          "d": "2023-06-22"
+        },
+        {
+          "id": "jgEMlopg-Hk",
+          "t": "Patreon： Serpico (1973) di Sidney Lumet - Minirece richiesta da Marco Zanetti",
+          "d": "2024-01-05"
+        },
+        {
+          "id": "UowfScVz8FE",
+          "t": "Patreon： Onora il padre e la madre (2007) di Sidney Lumet - Minirece richiesta da Bea02",
+          "d": "2025-04-16"
+        }
+      ]
+    },
+    {
+      "name": "Gus Van Sant",
+      "count": 8,
+      "genres": [
+        "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "kYUxUEDdPN0",
+          "t": "Patreon： ＂Elephant＂ (2003) di Gus Van Sant - Minirece richiesta da Alessandro Polizzi",
+          "d": "2018-09-22"
+        },
+        {
+          "id": "QDEQ-JwT-T0",
+          "t": "Patreon： Psycho (1998) di Gus Van Sant - Minirece richiesta da Nicola Fusco",
+          "d": "2019-08-14"
+        },
+        {
+          "id": "pQFAdBzkue4",
+          "t": "Patreon： Paranoid Park (2007) di Gus Van Sant - Minirece rihciesta da Nick Breznev",
+          "d": "2021-02-16"
+        },
+        {
+          "id": "aex8Ym79",
+          "t": "Ec_Patreon： Promise Land (2013) di Gus Van Sant - Minirece richiesta da Edoardo Pracucci",
+          "d": "2021-10-10"
+        },
+        {
+          "id": "J0jbB6fYJAw",
+          "t": "Patreon： Will Hunting - Genio ribelle (1998) di Gus Van Sant - Mini richiesta da Enrico Raspadori",
+          "d": "2021-10-15"
+        },
+        {
+          "id": "HlMflMXrcfY",
+          "t": "Patreon： Belli e Dannati (1991) di Gus Van Sant - Minirece richiesta da Paolo Berselli",
+          "d": "2022-06-18"
+        },
+        {
+          "id": "91BqigC9g6A",
+          "t": "Patreon： Scoprendo Forrester (2000) di Gus Van Sant - Minirece richiesta da Marco Zanetti",
+          "d": "2023-04-24"
+        },
+        {
+          "id": "EbZu5MkSlnk",
+          "t": "Patreon： Drugstore Cowboy (1989) di Gus Van Sant - Minirece richiesta da Franz75",
+          "d": "2023-05-27"
+        }
+      ]
+    },
+    {
+      "name": "Joel Schumacher",
+      "count": 8,
+      "genres": [
+        "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "4-v2hHFFX0A",
+          "t": "Patreon： ＂Ragazzi Perduti＂ (1987) di Joel Schumacher - Minirece richiesta da Alberto Crovace",
+          "d": "2019-01-17"
+        },
+        {
+          "id": "PcJU8xYilSs",
+          "t": "Patreon： Un giorno di ordinaria follia (1993) di Joel Schumacher - per Davide Mele e Simone Giordano",
+          "d": "2021-04-23"
+        },
+        {
+          "id": "Uu7ixVeJW4g",
+          "t": "Patreon： 8mm - Delitto a luci rosse (1999) di Joel Schumacher - Minirece richiesta da Giglia",
+          "d": "2021-07-22"
+        },
+        {
+          "id": "fibHBvKxMNU",
+          "t": "Patreoo： Tigerland (2000) di Joel Schumacher - Minirece richiesta da Firedrap",
+          "d": "2022-05-26"
+        },
+        {
+          "id": "TlWbke91ZU4",
+          "t": "Patreon： Number 23 (2007) di Joel Schumacher - Minirece richiesta da Lorenzo Morello",
+          "d": "2022-08-15"
+        },
+        {
+          "id": "_HPtRdzfR6o",
+          "t": "Patreon： Batman & Robin (1997) di Joel Schumacher - Minirece richiesta da FIST",
+          "d": "2023-12-22"
+        },
+        {
+          "id": "NrIF2Gu3n-8",
+          "t": "Patreon： Batman Forever (1995) di Joel Schumacher - Minirece richiesta da Vivica",
+          "d": "2023-12-29"
+        },
+        {
+          "id": "Cby",
+          "t": "BHRy09k_Patreon： Linea Mortale (1990) di Joel Schumacher - Minirece richiesta da Enrico C.",
+          "d": "2023-12-30"
+        }
+      ]
+    },
+    {
       "name": "Tobe Hooper",
       "count": 7,
       "genres": [
-        "Non classificato"
+        "Horror"
       ],
       "videos": [
         {
@@ -1718,6 +2002,50 @@
       ]
     },
     {
+      "name": "John McTiernan",
+      "count": 7,
+      "genres": [
+        "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "D3UV-MG3Z6g",
+          "t": "Patreon： ＂Trappola di Cristallo＂ (1988) di John McTiernan - Minirece richiesta da Marco Vanella",
+          "d": "2018-09-27"
+        },
+        {
+          "id": "IUoxucgbr9k",
+          "t": "Le Monografie di Frusciante： John McTiernan (Luglio 2020)",
+          "d": "2020-07-07"
+        },
+        {
+          "id": "zxPTxE0AhdM",
+          "t": "Patreon： Il 13° guerriero (1999) di John McTiernan - Minirece richiesta da Valarauker",
+          "d": "2021-10-27"
+        },
+        {
+          "id": "JXm09gKUHGA",
+          "t": "Patreon： Predator (1987) di John McTiernan - Minirece richiesta da Robin Forestelli",
+          "d": "2022-10-02"
+        },
+        {
+          "id": "MDcczhRJRLw",
+          "t": "Patreon： Last Action Hero (1993) di John McTiernan - Minirece richiesta da Francesco Cherubini",
+          "d": "2023-08-12"
+        },
+        {
+          "id": "_wUuIByVsDk",
+          "t": "Patreon： Die Hard - Duri a morire (1995) di John McTiernan - Minirece richiesta da VitoSlam",
+          "d": "2023-11-24"
+        },
+        {
+          "id": "GMw9g2njuj8",
+          "t": "Patreon： Nomads (1986) di John McTiernan - Minirece richiesta da Samuele Grazioli",
+          "d": "2025-11-18"
+        }
+      ]
+    },
+    {
       "name": "George A. Romero",
       "count": 6,
       "genres": [
@@ -1758,12 +2086,52 @@
       ]
     },
     {
+      "name": "Kathryn Bigelow",
+      "count": 6,
+      "genres": [
+        "Azione",
+        "Thriller"
+      ],
+      "videos": [
+        {
+          "id": "Hz5B6hMVtRo",
+          "t": "Patreon： ＂Strange Days＂ (1995) di Kathryn Bigelow - Minirece richiesta da Angelo Cardillo",
+          "d": "2018-09-28"
+        },
+        {
+          "id": "zaBw9nz-bEA",
+          "t": "Patreon： The Hurt Locker (2008) di Kathryn Bigelow - Minirece richiesta da Matteo",
+          "d": "2020-01-12"
+        },
+        {
+          "id": "PqnnbYy7vU4",
+          "t": "Patreon： ＂Strange Days＂ (1995) di Kathryn Bigelow - Minirece richiesta da Sandro Farinazzo",
+          "d": "2020-01-15"
+        },
+        {
+          "id": "8OP4Yj6aVHA",
+          "t": "Le Monografie di Frusciante： Kathryn Bigelow",
+          "d": "2020-04-30"
+        },
+        {
+          "id": "dFa",
+          "t": "B43tvnc_Patreon： Point Break - Punto di rottura (1991) di Kathryn Bigelow - Minirece richiesta da Lovely",
+          "d": "2024-01-05"
+        },
+        {
+          "id": "SlyZgnVxPNQ",
+          "t": "Patreon： Blue Steel - Bersaglio Mortale (1990) di Kathryn Bigelow - Minirece richiesta da Niko",
+          "d": "2024-02-15"
+        }
+      ]
+    },
+    {
       "name": "David Lynch",
       "count": 6,
       "genres": [
-        "Auteur",
+        "Autore",
         "Horror",
-        "Surrealism"
+        "Surrealismo"
       ],
       "videos": [
         {
@@ -1802,7 +2170,9 @@
       "name": "Francis Ford Coppola",
       "count": 6,
       "genres": [
-        "Non classificato"
+        "Autore",
+        "Crime",
+        "Classico"
       ],
       "videos": [
         {
@@ -1834,6 +2204,85 @@
           "id": "VMHkrMdq474",
           "t": "Le Monografie di Frusciante： Francis Ford Coppola",
           "d": "2021-05-04"
+        }
+      ]
+    },
+    {
+      "name": "Wes Anderson",
+      "count": 6,
+      "genres": [
+        "Autore",
+        "Commedia"
+      ],
+      "videos": [
+        {
+          "id": "ONQVC9--zOk",
+          "t": "Patreon： Il treno per il Darjeeling (2007) di Wes Anderson - Mini richiesta da Rossano Dalla Barba",
+          "d": "2019-09-08"
+        },
+        {
+          "id": "TpsBSwHrjkU",
+          "t": "Patreon： Rushmore (1998) di Wes Anderson -  Minirece richiesta da Leonardo Ostia",
+          "d": "2023-02-17"
+        },
+        {
+          "id": "iX-TB9B-81I",
+          "t": "Frusciante al Cinema： Asteroid City (2023) di Wes Anderson - Settembre 2023",
+          "d": "2023-09-30"
+        },
+        {
+          "id": "lmke7rZbuoY",
+          "t": "Patreon： L'isola dei cani (2018) di Wes Anderson - Minirece richiesta da Giovanni D'Agostino",
+          "d": "2023-11-10"
+        },
+        {
+          "id": "couwxNAo70s",
+          "t": "Patreon： Grand Budapest Hotel (2014) di Wes Anderson - Minirece richiesta da cinemalover",
+          "d": "2023-11-11"
+        },
+        {
+          "id": "MqnksfghjNk",
+          "t": "Patreon： I Tenenbaum (2001) di Wes Anderson - Minirece richiesta da Nicola Campitelli",
+          "d": "2024-05-01"
+        }
+      ]
+    },
+    {
+      "name": "Peter Weir",
+      "count": 6,
+      "genres": [
+        "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "chbDUUJ5",
+          "t": "MY_Patreon： Master & Commander (2003) di Peter Weir - Minirece richiesta da Filippo Massimi",
+          "d": "2019-12-07"
+        },
+        {
+          "id": "pjlFEWeoa9M",
+          "t": "Patreon： L'attimo fuggente (1989) di Peter Weir - Minirece richiesta da Fabrizio Giovanardi",
+          "d": "2020-03-01"
+        },
+        {
+          "id": "WlnpK6-nylQ",
+          "t": "Patreon： Picnic ad Hanging Rock (1975) - Peter Weir - Mini richiesta da Maddalena Caso",
+          "d": "2020-11-05"
+        },
+        {
+          "id": "OoBHpMu0NXA",
+          "t": "Patreon： L'ultima onda (1977) di Peter Weir - Minirece richiesta da Marco Zanetti",
+          "d": "2024-03-29"
+        },
+        {
+          "id": "XwLdRbneqWg",
+          "t": "Patreon： Fearless - Senza paura (1993) di Peter Weir - Minirece richiesta da Paolo Marziali",
+          "d": "2025-03-20"
+        },
+        {
+          "id": "ptCBd8-gokg",
+          "t": "Patreon： The Way Back (2010) di Peter Weir - Minirece richiesta da Bronso",
+          "d": "2026-02-08"
         }
       ]
     },
@@ -1875,7 +2324,7 @@
       "name": "James Wan",
       "count": 5,
       "genres": [
-        "Non classificato"
+        "Horror"
       ],
       "videos": [
         {
@@ -1909,7 +2358,8 @@
       "name": "Robert Zemeckis",
       "count": 5,
       "genres": [
-        "Non classificato"
+        "Sci-Fi",
+        "Avventura"
       ],
       "videos": [
         {
@@ -1943,7 +2393,8 @@
       "name": "Lars von Trier",
       "count": 5,
       "genres": [
-        "Non classificato"
+        "Autore",
+        "Drammatico"
       ],
       "videos": [
         {
@@ -1977,7 +2428,8 @@
       "name": "Park Chan-wook",
       "count": 5,
       "genres": [
-        "Non classificato"
+        "Thriller",
+        "Orientale"
       ],
       "videos": [
         {
@@ -2012,7 +2464,7 @@
       "count": 5,
       "genres": [
         "Sci-Fi",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -2043,10 +2495,47 @@
       ]
     },
     {
+      "name": "Bong Joon-ho",
+      "count": 5,
+      "genres": [
+        "Thriller",
+        "Orientale",
+        "Autore"
+      ],
+      "videos": [
+        {
+          "id": "T3pG04bCn4I",
+          "t": "Patreon：Memories of Murder di Bong Joon-ho - per Alessio Fanelli e Federico Carlini(dedicata a Gigi)",
+          "d": "2020-01-24"
+        },
+        {
+          "id": "jjAXo6nCcK8",
+          "t": "Patreon： ＂Parasite＂ (2019) di Bong Joon-ho - Mini richiesta da A. Delle Chiaie⧸ Rossella⧸ Romina",
+          "d": "2020-02-11"
+        },
+        {
+          "id": "PEbQsGD4KCM",
+          "t": "Patreon： Snowpiercer (2013) di Bong Joon-ho - Minirece richiesta da EraKa",
+          "d": "2023-09-01"
+        },
+        {
+          "id": "vsv",
+          "t": "SfpMIeY_Patreon： Madre (2009) di Bong Joon-ho - Per Inkspot, Simone95, Alrirra, Lorenzo Luzi, Leonardo Poli",
+          "d": "2023-11-12"
+        },
+        {
+          "id": "tmRYZMDbKdQ",
+          "t": "Frusciante al Cinema： Mickey 17 (2025) di Bong Joon-ho - Marzo 2025",
+          "d": "2025-03-08"
+        }
+      ]
+    },
+    {
       "name": "Rob Zombie",
       "count": 5,
       "genres": [
-        "Non classificato"
+        "Horror",
+        "Cult"
       ],
       "videos": [
         {
@@ -2109,7 +2598,8 @@
       "name": "Michele Soavi",
       "count": 4,
       "genres": [
-        "Non classificato"
+        "Horror",
+        "Italiano"
       ],
       "videos": [
         {
@@ -2135,10 +2625,101 @@
       ]
     },
     {
+      "name": "Matteo Garrone",
+      "count": 4,
+      "genres": [
+        "Autore",
+        "Italiano"
+      ],
+      "videos": [
+        {
+          "id": "E5ayd1kxbdc",
+          "t": "Patreon： ＂L' Imbalsamatore＂ (2002) di Matteo Garrone - Minirece richiesta da Gianni Ottaviani",
+          "d": "2018-09-25"
+        },
+        {
+          "id": "8",
+          "t": "VAoNe_s64_Patreon： Pinocchio (2019) di Matteo Garrone - Minirece richiesta da Andrea Aste",
+          "d": "2021-07-01"
+        },
+        {
+          "id": "iNTC4vtstJw",
+          "t": "Patreon： Primo Amore (2004) di Matteo Garrone - Minirece richiesta da Andrea Aste",
+          "d": "2022-01-22"
+        },
+        {
+          "id": "NYOczDqW1yQ",
+          "t": "Patreon： Gomorra (2008) di Matteo Garrone - Minirece richiesta da Davide Mele",
+          "d": "2024-01-29"
+        }
+      ]
+    },
+    {
+      "name": "Pascal Laugier",
+      "count": 4,
+      "genres": [
+        "Horror"
+      ],
+      "videos": [
+        {
+          "id": "NkVKEnzNhmo",
+          "t": "Patreon： ＂Saint Ange＂ (2004) di Pascal Laugier - Minirece richiesta da Gianni Ottaviani",
+          "d": "2018-10-04"
+        },
+        {
+          "id": "Q5",
+          "t": "I0NyXJ_k_Frusciante al Cinema： ＂La Casa delle Bambole - Ghostland＂ (2018) di Pascal Laugier",
+          "d": "2018-12-05"
+        },
+        {
+          "id": "PiZt17yJ",
+          "t": "k4_Patreon： I bambini di Cold Rock (2012) di Pascal Laugier - Minirece richiesta da Vito32",
+          "d": "2021-10-03"
+        },
+        {
+          "id": "dcz9rq3kHaQ",
+          "t": "Patreon： Martyrs (2008) di Pascal Laugier - Minirece richiesta da Matteo Fantone per Luca Speciale",
+          "d": "2026-02-14"
+        }
+      ]
+    },
+    {
+      "name": "Na Hong-Jin",
+      "count": 4,
+      "genres": [
+        "Thriller",
+        "Orientale"
+      ],
+      "videos": [
+        {
+          "id": "dxUbgIvfDws",
+          "t": "Patreon： ＂Goksung - La presenza del diavolo＂ (2016) di Na Hong-jin - Minirece richiesta da Mangiafoo",
+          "d": "2020-05-13"
+        },
+        {
+          "id": "n28sUgMQMJg",
+          "t": "Patreon： The Yellow Sea (2011) di Na Hong-jin - Minirece richiesta da Tommaso Puccetti",
+          "d": "2020-07-27"
+        },
+        {
+          "id": "QO0",
+          "t": "QwjOQ1Q_Patreon： The Chaser (2008) di Na Hong-jin - Minirece richiesta da Dario Bagatin",
+          "d": "2023-04-11"
+        },
+        {
+          "id": "0Qt5Qe5AHG8",
+          "t": "Frusciante in Oriente： Estratto Masterclass Florence Korea Film Fest - Na Hong-Jin (Marzo 2025)",
+          "d": "2025-03-28"
+        }
+      ]
+    },
+    {
       "name": "Sergio Leone",
       "count": 4,
       "genres": [
-        "Non classificato"
+        "Western",
+        "Italiano",
+        "Autore"
       ],
       "videos": [
         {
@@ -2164,10 +2745,69 @@
       ]
     },
     {
-      "name": "Lamberto Bava",
+      "name": "Peter Greenaway",
       "count": 4,
       "genres": [
         "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "xQoFcR6IwaQ",
+          "t": "Patreon： L'ultima tempesta (1991) di Peter Greenaway - Minirece richiesta da Franco Mazzoni",
+          "d": "2021-02-14"
+        },
+        {
+          "id": "Z92",
+          "t": "hyHQdfg_Patreon： Giochi nell'acqua (1988) di Peter Greenaway - Minirece richiesta da Luca Pomillo",
+          "d": "2021-05-05"
+        },
+        {
+          "id": "aOTlZg5U4qA",
+          "t": "Patreon： I racconti del cuscino (1997) di Peter Greenaway - Minirece richiesta da Franco Mazzoni",
+          "d": "2021-05-11"
+        },
+        {
+          "id": "rzxPoY5-FJo",
+          "t": "Patreon： Lo Zoo di Venere (1985) di  Peter Greenaway - Minirece richiesta da Massimiliano Cerotti",
+          "d": "2023-05-26"
+        }
+      ]
+    },
+    {
+      "name": "Neil Jordan",
+      "count": 4,
+      "genres": [
+        "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "PyISu9",
+          "t": "4WtE_Patreon： Non siamo angeli (1989) di Neil Jordan - Minirece richiesta da Gab Zaff",
+          "d": "2021-03-31"
+        },
+        {
+          "id": "mtAtRAEGX3Q",
+          "t": "Patreon： Byzantium (2012) di Neil Jordan - Minirece richiesta da Andrea Gaiga",
+          "d": "2023-08-28"
+        },
+        {
+          "id": "jSJw4Zvrtzs",
+          "t": "Patreon： Intervista col Vampiro (1994) di Neil Jordan - Minirece richiesta da Vanni",
+          "d": "2024-03-24"
+        },
+        {
+          "id": "LqSikHalEyY",
+          "t": "Patreon： La moglie del soldato (1992) di Neil Jordan - Mini richiesta da Nico72, Francesco Atzeri",
+          "d": "2025-02-23"
+        }
+      ]
+    },
+    {
+      "name": "Lamberto Bava",
+      "count": 4,
+      "genres": [
+        "Horror",
+        "Italiano"
       ],
       "videos": [
         {
@@ -2197,7 +2837,7 @@
       "count": 4,
       "genres": [
         "Horror",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -2227,7 +2867,7 @@
       "count": 4,
       "genres": [
         "Horror",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -2285,7 +2925,7 @@
       "name": "Ti West",
       "count": 4,
       "genres": [
-        "Non classificato"
+        "Horror"
       ],
       "videos": [
         {
@@ -2339,7 +2979,7 @@
       "count": 3,
       "genres": [
         "Sci-Fi",
-        "Auteur"
+        "Autore"
       ],
       "videos": [
         {
@@ -2360,11 +3000,35 @@
       ]
     },
     {
+      "name": "Alejandro Jodorowsky",
+      "count": 3,
+      "genres": [
+        "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "AoQ9HKBSY3I",
+          "t": "Patreon： El Topo (1970) di  Alejandro Jodorowsky - Minirece richiesta da Gianni Ottaviani",
+          "d": "2019-04-03"
+        },
+        {
+          "id": "opUhFCmaWQI",
+          "t": "Patreon： La Montagna Sacra (1973) di Alejandro Jodorowsky - Per Giovanni Ranuzzi e Michael Luppi",
+          "d": "2020-03-25"
+        },
+        {
+          "id": "icNS76CyMbM",
+          "t": "Patreon： Santa Sangre (1989) di Alejandro Jodorowsky - Minirece per Vadja Togliota e Ramon Pesenti",
+          "d": "2023-06-01"
+        }
+      ]
+    },
+    {
       "name": "Ruggero Deodato",
       "count": 3,
       "genres": [
         "Horror",
-        "Italian",
+        "Italiano",
         "Cult"
       ],
       "videos": [
@@ -2386,10 +3050,38 @@
       ]
     },
     {
+      "name": "Bruno Mattei",
+      "count": 3,
+      "genres": [
+        "B-Movie",
+        "Italiano",
+        "Cult"
+      ],
+      "videos": [
+        {
+          "id": "eUqLop5ews0",
+          "t": "Patreon： Robowar - (1988) di Vincent Dawn (Bruno Mattei) - Per Johnny Micheletti dedicata a Synergo",
+          "d": "2020-07-08"
+        },
+        {
+          "id": "Uz2LGGX7IH8",
+          "t": "Patreon： Virus (1980) di Bruno Mattei - Minirece richiesta da Dave Logan",
+          "d": "2021-06-24"
+        },
+        {
+          "id": "5FBGU2z0",
+          "t": "uU_Patreon： La Tomba (2004) di Bruno Mattei - Minirece richiesta da Vito32",
+          "d": "2022-05-05"
+        }
+      ]
+    },
+    {
       "name": "William Lustig",
       "count": 3,
       "genres": [
-        "Non classificato"
+        "Horror",
+        "Cult",
+        "B-Movie"
       ],
       "videos": [
         {
@@ -2413,7 +3105,8 @@
       "name": "Clive Barker",
       "count": 2,
       "genres": [
-        "Non classificato"
+        "Horror",
+        "Fantasy"
       ],
       "videos": [
         {
@@ -2429,10 +3122,31 @@
       ]
     },
     {
+      "name": "Richard Stanley",
+      "count": 2,
+      "genres": [
+        "Horror",
+        "Sci-Fi",
+        "Cult"
+      ],
+      "videos": [
+        {
+          "id": "kubLIBeeZeQ",
+          "t": "Patreon： Hardware (1990) di Richard Stanley - Minirece richiesta da Stefano Cappuccelli",
+          "d": "2019-06-10"
+        },
+        {
+          "id": "S8ePSB6UqA0",
+          "t": "Le Interviste di Frusciante： Richard Stanley (Hardware, Demoniaca, Il colore venuto dallo spazio)",
+          "d": "2025-07-25"
+        }
+      ]
+    },
+    {
       "name": "Mike Flanagan",
       "count": 2,
       "genres": [
-        "Non classificato"
+        "Horror"
       ],
       "videos": [
         {
@@ -2448,10 +3162,30 @@
       ]
     },
     {
-      "name": "Robert Eggers",
+      "name": "Dario Moccia",
       "count": 2,
       "genres": [
         "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "sUNR90gnyoA",
+          "t": "Patreon：Sbatti il mostro in prima pagina (1972) di M.Bellocchio - Mini richiesta da Dario Moccia",
+          "d": "2019-09-24"
+        },
+        {
+          "id": "LLUd2Q0dcws",
+          "t": "Patreon： Your Name (2016) di M.Shinkai - Da  Alessandro Palazio per Dario Moccia e Luca Molinaro",
+          "d": "2020-12-21"
+        }
+      ]
+    },
+    {
+      "name": "Robert Eggers",
+      "count": 2,
+      "genres": [
+        "Horror",
+        "Autore"
       ],
       "videos": [
         {
@@ -2463,6 +3197,25 @@
           "id": "iuGKSUohAdU",
           "t": "Patreon： The Witch (2015) di Robert Eggers - Minirece richiesta da Salvatorix",
           "d": "2023-11-05"
+        }
+      ]
+    },
+    {
+      "name": "Sofia Coppola",
+      "count": 2,
+      "genres": [
+        "Non classificato"
+      ],
+      "videos": [
+        {
+          "id": "dC-IrSmlHX0",
+          "t": "Le Monografie di Frusciante： Sofia Coppola - Marzo 2023",
+          "d": "2023-03-20"
+        },
+        {
+          "id": "ewLg4nPJHYQ",
+          "t": "Patreon： Bling Ring (2013) di Sofia Coppola - Minirece richiesta da Antonello",
+          "d": "2024-02-23"
         }
       ]
     },
@@ -2495,20 +3248,6 @@
       ]
     },
     {
-      "name": "Marzo 2023",
-      "count": 1,
-      "genres": [
-        "Non classificato"
-      ],
-      "videos": [
-        {
-          "id": "dC-IrSmlHX0",
-          "t": "Le Monografie di Frusciante： Sofia Coppola - Marzo 2023",
-          "d": "2023-03-20"
-        }
-      ]
-    },
-    {
       "name": "Alexandre Aja",
       "count": 1,
       "genres": [
@@ -2524,7 +3263,7 @@
     }
   ],
   "genre_connections": {
-    "Auteur": [
+    "Autore": [
       "Martin Scorsese",
       "Steven Spielberg",
       "David Cronenberg",
@@ -2532,49 +3271,42 @@
       "Stanley Kubrick",
       "Guillermo del Toro",
       "Woody Allen",
+      "Oliver Stone",
       "Christopher Nolan",
       "Quentin Tarantino",
+      "Pupi Avati",
+      "Sidney Lumet",
       "David Lynch",
+      "Francis Ford Coppola",
+      "Wes Anderson",
+      "Lars von Trier",
       "Denis Villeneuve",
+      "Bong Joon-ho",
+      "Matteo Garrone",
+      "Sergio Leone",
       "Jordan Peele",
       "Ari Aster",
-      "Ridley Scott"
+      "Ridley Scott",
+      "Robert Eggers"
     ],
     "Crime": [
       "Martin Scorsese",
-      "Quentin Tarantino"
-    ],
-    "Non classificato": [
-      "Alfred Hitchcock",
-      "Takashi Miike",
       "Brian De Palma",
-      "Umberto Lenzi",
-      "Sergio Martino",
-      "Pupi Avati",
-      "Paul Verhoeven",
-      "Tobe Hooper",
-      "Roman Polanski",
-      "Francis Ford Coppola",
-      "James Wan",
-      "Robert Zemeckis",
-      "Lars von Trier",
+      "Quentin Tarantino",
+      "Francis Ford Coppola"
+    ],
+    "Thriller": [
+      "Alfred Hitchcock",
+      "Brian De Palma",
+      "Kathryn Bigelow",
       "Park Chan-wook",
-      "Rob Zombie",
-      "George Miller",
-      "Michele Soavi",
-      "Sergio Leone",
-      "Lamberto Bava",
-      "Eli Roth",
-      "Ti West",
-      "Terry Gilliam",
-      "William Lustig",
-      "Clive Barker",
-      "Mike Flanagan",
-      "Robert Eggers",
-      "Manetti Bros",
-      "Dicembre 2022",
-      "Marzo 2023",
-      "Alexandre Aja"
+      "Bong Joon-ho",
+      "Na Hong-Jin"
+    ],
+    "Classico": [
+      "Alfred Hitchcock",
+      "Sidney Lumet",
+      "Francis Ford Coppola"
     ],
     "Horror": [
       "Lucio Fulci",
@@ -2583,26 +3315,51 @@
       "Stanley Kubrick",
       "Sam Raimi",
       "John Carpenter",
+      "Takashi Miike",
       "Guillermo del Toro",
+      "Brian De Palma",
+      "Umberto Lenzi",
       "Joe Dante",
       "Mario Bava",
+      "Pupi Avati",
+      "Tobe Hooper",
       "George A. Romero",
       "David Lynch",
       "Wes Craven",
+      "James Wan",
+      "Rob Zombie",
+      "Michele Soavi",
+      "Pascal Laugier",
+      "Lamberto Bava",
       "Jordan Peele",
       "Ari Aster",
-      "Ruggero Deodato"
+      "Ti West",
+      "Ruggero Deodato",
+      "William Lustig",
+      "Clive Barker",
+      "Richard Stanley",
+      "Mike Flanagan",
+      "Robert Eggers"
     ],
     "Giallo": [
       "Lucio Fulci",
       "Dario Argento",
+      "Sergio Martino",
       "Mario Bava"
     ],
-    "Italian": [
+    "Italiano": [
       "Lucio Fulci",
       "Dario Argento",
+      "Umberto Lenzi",
+      "Sergio Martino",
       "Mario Bava",
-      "Ruggero Deodato"
+      "Pupi Avati",
+      "Michele Soavi",
+      "Matteo Garrone",
+      "Sergio Leone",
+      "Lamberto Bava",
+      "Ruggero Deodato",
+      "Bruno Mattei"
     ],
     "Sci-Fi": [
       "Steven Spielberg",
@@ -2611,36 +3368,89 @@
       "John Carpenter",
       "Christopher Nolan",
       "James Cameron",
+      "Paul Verhoeven",
+      "Robert Zemeckis",
       "Denis Villeneuve",
-      "Ridley Scott"
+      "Ridley Scott",
+      "Richard Stanley"
     ],
-    "Adventure": [
-      "Steven Spielberg"
+    "Avventura": [
+      "Steven Spielberg",
+      "Robert Zemeckis"
     ],
     "Fantasy": [
       "Tim Burton",
-      "Guillermo del Toro"
+      "Hayao Miyazaki",
+      "Guillermo del Toro",
+      "Clive Barker"
     ],
     "Cult": [
       "Sam Raimi",
       "John Carpenter",
+      "Takashi Miike",
+      "Umberto Lenzi",
       "Joe Dante",
       "Quentin Tarantino",
-      "Ruggero Deodato"
+      "Paul Verhoeven",
+      "Rob Zombie",
+      "Ruggero Deodato",
+      "Bruno Mattei",
+      "William Lustig",
+      "Richard Stanley"
     ],
-    "Comedy": [
-      "Sam Raimi",
+    "Orientale": [
+      "Takashi Miike",
+      "Park Chan-wook",
+      "Bong Joon-ho",
+      "Na Hong-Jin"
+    ],
+    "Animazione": [
+      "Hayao Miyazaki"
+    ],
+    "Commedia": [
       "Woody Allen",
-      "Joe Dante"
+      "Joe Dante",
+      "Wes Anderson"
     ],
-    "Action": [
-      "James Cameron"
+    "Drammatico": [
+      "Oliver Stone",
+      "Sidney Lumet",
+      "Lars von Trier"
+    ],
+    "Azione": [
+      "James Cameron",
+      "Kathryn Bigelow"
+    ],
+    "Non classificato": [
+      "Gus Van Sant",
+      "Joel Schumacher",
+      "Roman Polanski",
+      "John McTiernan",
+      "Peter Weir",
+      "George Miller",
+      "Peter Greenaway",
+      "Neil Jordan",
+      "Eli Roth",
+      "Terry Gilliam",
+      "Alejandro Jodorowsky",
+      "Dario Moccia",
+      "Sofia Coppola",
+      "Manetti Bros",
+      "Dicembre 2022",
+      "Alexandre Aja"
     ],
     "Indie": [
       "George A. Romero"
     ],
-    "Surrealism": [
+    "Surrealismo": [
       "David Lynch"
+    ],
+    "Western": [
+      "Sergio Leone"
+    ],
+    "B-Movie": [
+      "Bruno Mattei",
+      "William Lustig"
     ]
   }
 }

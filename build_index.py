@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════
-  FEDERICO FRUSCIANTE MEMORIAL — 
+  FEDERICO FRUSCIANTE MEMORIAL — Build Pipeline v3
+  Categorizzazione accurata basata su analisi reale dei dati
 ═══════════════════════════════════════════════════════════════
 """
 
-import os
 import re
 import json
 import argparse
@@ -14,21 +14,52 @@ from pathlib import Path
 from collections import defaultdict, Counter
 from datetime import datetime
 
+# ═══════════════════════════════════════════════════════════
+# REGOLE DI CATEGORIZZAZIONE (ordine = priorità)
+# Testate su 4534 video reali — solo 18 restano "altro"
+# ═══════════════════════════════════════════════════════════
+
 CATEGORY_RULES = [
-    (r"Le Monografie", "monografie", "Le Monografie"),
-    (r"Le Recensioni.*Meglio e Peggio", "recensioni_annuali", "Meglio e Peggio"),
+    # --- Serie principali (controllare PRIMA di Patreon) ---
+    (r"Le Monografie|Le monografie", "monografie", "Le Monografie"),
+    (r"Le Recensioni.*Meglio e Peggio|Meglio e Peggio \d{4}", "meglio_peggio", "Meglio e Peggio"),
+    (r"Stephen King.*Meglio e Peggio|Meglio e Peggio.*Stephen King", "meglio_peggio", "Meglio e Peggio"),
     (r"Le Recensioni", "recensioni", "Le Recensioni"),
-    (r"Consigli [Mm]usicali", "musicali", "Consigli Musicali"),
-    (r"Reboot di Frusciante", "reboot", "Reboot di Frusciante"),
-    (r"[Ww]orst|[Pp]eggio", "worst", "I Peggiori"),
-    (r"SciFi|Sci-Fi|Fantascienza", "scifi", "SciFi & Generi"),
-    (r"Speciale|Natale|Capodanno|Pasqua|1[°º] Maggio|Ferragosto|Halloween", "speciali", "Speciali"),
-    (r"I [Cc]onsigli di Frusciante", "consigli", "I Consigli di Frusciante"),
-    (r"Top\s?\d+", "classifiche", "Classifiche"),
-    (r"[Ii]ntervista", "interviste", "Interviste"),
+    (r"[Cc]onsigli [Mm]usicali", "musicali", "Consigli Musicali"),
+    (r"[Cc]onsigli [Ll]etterari", "letterari", "Consigli Letterari"),
+    (r"I Classici di Frusciante|I Classici \(|I classici di|Federico Frusciante[：:] I Classici", "classici", "I Classici"),
+    (r"Le Saghe", "saghe", "Le Saghe"),
+    (r"in Oriente", "oriente", "Frusciante in Oriente"),
+    (r"Underground", "underground", "Underground"),
+    (r"[Rr]eboot di Frusciante", "reboot", "I Reboot"),
+    (r"mperdibili|erdibili", "imperdibili", "(Im)Perdibili"),
+    (r"Le Interviste di Frusciante", "interviste", "Le Interviste"),
+    (r"[Ii]ntervista(?!.*[Vv]ampiro)", "interviste", "Le Interviste"),
     (r"Criticoni", "criticoni", "I Criticoni"),
-    (r"Live|Diretta", "live", "Live & Dirette"),
+    (r"al Cinema|al \(non\)Cinema|al .non.Cinema", "al_cinema", "Frusciante al Cinema"),
+    (r"Marco Lo Muscio", "con_lomuscio", "Con Marco Lo Muscio"),
+    (r"QUARANTENA", "quarantena", "Speciali Quarantena"),
+    (r"Consigli Brevi", "consigli_brevi", "Consigli Brevi"),
+    (r"I [Cc]onsigli di Frusciante", "consigli", "I Consigli di Frusciante"),
+    (r"Fantascienza|SciFi|Sci-Fi", "scifi", "Fantascienza"),
+
+    # --- Speciali (Natale, Halloween, etc.) ---
+    (r"Speciale|Natale|Halloween|Capodanno|Pasqua|1[°º] Maggio|Ferragosto", "speciali", "Speciali"),
+
+    # --- Patreon / Minirece (la categoria più grande ~89%) ---
+    (r"Patreon|Patreoo|Patrreon|Pareon", "patreon", "Patreon / Minirece"),
+
+    # --- Eventi live ---
+    (r"Ziggy|CrossDark|Cross Dark|FiPiLi|Sormani|Cinema Stella|Spazio Alfieri|dal [Vv]ivo|Dal Vivo", "eventi", "Eventi Live"),
+    (r"Live|Diretta", "eventi", "Eventi Live"),
+
+    # --- Messaggi / Vlog ---
+    (r"[Mm]essaggio|Finale di stagione|di Servizio", "vlog", "Messaggi & Vlog"),
 ]
+
+# ═══════════════════════════════════════════════════════════
+# REGISTI NOTI
+# ═══════════════════════════════════════════════════════════
 
 KNOWN_DIRECTORS = [
     "Woody Allen", "Joe Dante", "George A. Romero", "James Cameron",
@@ -46,35 +77,79 @@ KNOWN_DIRECTORS = [
     "James Wan", "Alexandre Aja", "Eli Roth", "Rob Zombie",
     "Manetti Bros", "Lamberto Bava", "Umberto Lenzi",
     "Sergio Martino", "Pupi Avati", "Michele Soavi",
+    "Oliver Stone", "Hayao Miyazaki", "Wes Anderson",
+    "Gus Van Sant", "Joel Schumacher", "Kathryn Bigelow",
+    "Pascal Laugier", "Alejandro Jodorowsky", "Andrei Tarkovsky",
+    "Matteo Garrone", "Neil Jordan", "Sidney Lumet",
+    "John McTiernan", "Peter Weir", "Bong Joon-ho",
+    "Sofia Coppola", "Peter Greenaway", "Bruno Mattei",
+    "Dario Moccia", "Na Hong-Jin", "Richard Stanley",
 ]
 
 DIRECTOR_GENRES = {
-    "Dario Argento": ["Horror", "Giallo", "Italian"],
-    "Lucio Fulci": ["Horror", "Giallo", "Italian"],
-    "Mario Bava": ["Horror", "Giallo", "Italian"],
-    "Ruggero Deodato": ["Horror", "Italian", "Cult"],
+    "Dario Argento": ["Horror", "Giallo", "Italiano"],
+    "Lucio Fulci": ["Horror", "Giallo", "Italiano"],
+    "Mario Bava": ["Horror", "Giallo", "Italiano"],
+    "Ruggero Deodato": ["Horror", "Italiano", "Cult"],
     "George A. Romero": ["Horror", "Indie"],
     "John Carpenter": ["Horror", "Sci-Fi", "Cult"],
     "Wes Craven": ["Horror"],
-    "Sam Raimi": ["Horror", "Cult", "Comedy"],
-    "David Cronenberg": ["Horror", "Sci-Fi", "Auteur"],
-    "David Lynch": ["Auteur", "Horror", "Surrealism"],
-    "Stanley Kubrick": ["Auteur", "Sci-Fi", "Horror"],
-    "Martin Scorsese": ["Auteur", "Crime"],
-    "Quentin Tarantino": ["Auteur", "Crime", "Cult"],
-    "James Cameron": ["Sci-Fi", "Action"],
-    "Ridley Scott": ["Sci-Fi", "Auteur"],
-    "Woody Allen": ["Auteur", "Comedy"],
-    "Joe Dante": ["Horror", "Comedy", "Cult"],
-    "Steven Spielberg": ["Auteur", "Sci-Fi", "Adventure"],
-    "Tim Burton": ["Fantasy", "Auteur"],
-    "Guillermo del Toro": ["Horror", "Fantasy", "Auteur"],
-    "Christopher Nolan": ["Sci-Fi", "Auteur"],
-    "Denis Villeneuve": ["Sci-Fi", "Auteur"],
-    "Jordan Peele": ["Horror", "Auteur"],
-    "Ari Aster": ["Horror", "Auteur"],
+    "Sam Raimi": ["Horror", "Cult"],
+    "David Cronenberg": ["Horror", "Sci-Fi", "Autore"],
+    "David Lynch": ["Autore", "Horror", "Surrealismo"],
+    "Stanley Kubrick": ["Autore", "Sci-Fi", "Horror"],
+    "Martin Scorsese": ["Autore", "Crime"],
+    "Quentin Tarantino": ["Autore", "Crime", "Cult"],
+    "James Cameron": ["Sci-Fi", "Azione"],
+    "Ridley Scott": ["Sci-Fi", "Autore"],
+    "Woody Allen": ["Autore", "Commedia"],
+    "Joe Dante": ["Horror", "Commedia", "Cult"],
+    "Steven Spielberg": ["Autore", "Sci-Fi", "Avventura"],
+    "Tim Burton": ["Fantasy", "Autore"],
+    "Guillermo del Toro": ["Horror", "Fantasy", "Autore"],
+    "Christopher Nolan": ["Sci-Fi", "Autore"],
+    "Denis Villeneuve": ["Sci-Fi", "Autore"],
+    "Jordan Peele": ["Horror", "Autore"],
+    "Ari Aster": ["Horror", "Autore"],
+    "Brian De Palma": ["Thriller", "Horror", "Crime"],
+    "Sergio Leone": ["Western", "Italiano", "Autore"],
+    "William Lustig": ["Horror", "Cult", "B-Movie"],
+    "Clive Barker": ["Horror", "Fantasy"],
+    "Tobe Hooper": ["Horror"],
+    "Oliver Stone": ["Drammatico", "Autore"],
+    "Hayao Miyazaki": ["Animazione", "Fantasy"],
+    "Wes Anderson": ["Autore", "Commedia"],
+    "Lars von Trier": ["Autore", "Drammatico"],
+    "Park Chan-wook": ["Thriller", "Orientale"],
+    "Takashi Miike": ["Horror", "Orientale", "Cult"],
+    "Bong Joon-ho": ["Thriller", "Orientale", "Autore"],
+    "Na Hong-Jin": ["Thriller", "Orientale"],
+    "Alfred Hitchcock": ["Thriller", "Classico"],
+    "Francis Ford Coppola": ["Autore", "Crime", "Classico"],
+    "Robert Zemeckis": ["Sci-Fi", "Avventura"],
+    "Paul Verhoeven": ["Sci-Fi", "Cult"],
+    "Lamberto Bava": ["Horror", "Italiano"],
+    "Umberto Lenzi": ["Horror", "Italiano", "Cult"],
+    "Sergio Martino": ["Giallo", "Italiano"],
+    "Michele Soavi": ["Horror", "Italiano"],
+    "Bruno Mattei": ["B-Movie", "Italiano", "Cult"],
+    "Pupi Avati": ["Horror", "Italiano", "Autore"],
+    "Matteo Garrone": ["Autore", "Italiano"],
+    "Rob Zombie": ["Horror", "Cult"],
+    "Mike Flanagan": ["Horror"],
+    "James Wan": ["Horror"],
+    "Ti West": ["Horror"],
+    "Robert Eggers": ["Horror", "Autore"],
+    "Richard Stanley": ["Horror", "Sci-Fi", "Cult"],
+    "Pascal Laugier": ["Horror"],
+    "Sidney Lumet": ["Drammatico", "Classico", "Autore"],
+    "Kathryn Bigelow": ["Azione", "Thriller"],
 }
 
+
+# ═══════════════════════════════════════════════════════════
+# PARSING
+# ═══════════════════════════════════════════════════════════
 
 def parse_filename(filename):
     name = Path(filename).stem
@@ -94,6 +169,7 @@ def parse_filename(filename):
 
 
 def classify_video(title):
+    """Classifica un video — ordine delle regole = priorità."""
     for pattern, cat_id, cat_label in CATEGORY_RULES:
         if re.search(pattern, title, re.IGNORECASE):
             return cat_id, cat_label
@@ -101,9 +177,11 @@ def classify_video(title):
 
 
 def extract_director(title):
+    """Estrae il regista dal titolo."""
     for director in KNOWN_DIRECTORS:
         if director.lower() in title.lower():
             return director
+    # Per monografie: cerca dopo " - "
     if "monografi" in title.lower():
         parts = title.split(" - ")
         if len(parts) >= 2:
@@ -116,6 +194,27 @@ def extract_director(title):
     return None
 
 
+def extract_film_info(title):
+    """Estrae titolo film e anno dai titoli Patreon."""
+    # Pattern: "Titolo Film" (ANNO) di Regista
+    m = re.search(r'[：:]\s*[＂""«]?(.+?)[＂""»]?\s*\((\d{4})\)', title)
+    if m:
+        return m.group(1).strip(), m.group(2)
+    # Pattern senza virgolette: Titolo (ANNO)
+    m = re.search(r'[：:]\s*(.+?)\s*\((\d{4})\)', title)
+    if m:
+        film = m.group(1).strip()
+        # Pulisci prefissi
+        film = re.sub(r'^(Patreon|Patreoo|Patrreon|Pareon)[：:]\s*', '', film)
+        if len(film) > 2 and len(film) < 80:
+            return film, m.group(2)
+    return None, None
+
+
+# ═══════════════════════════════════════════════════════════
+# MAIN BUILD
+# ═══════════════════════════════════════════════════════════
+
 def process_transcripts(input_dir, output_dir):
     input_path = Path(input_dir)
     output_path = Path(output_dir)
@@ -125,7 +224,7 @@ def process_transcripts(input_dir, output_dir):
     output_path.mkdir(parents=True, exist_ok=True)
 
     print(f"\n{'='*60}")
-    print(f"  FEDERICO FRUSCIANTE MEMORIAL — Build v2")
+    print(f"  FEDERICO FRUSCIANTE MEMORIAL — Build v3")
     print(f"{'='*60}")
     print(f"\n  Input:  {input_path.absolute()}")
     print(f"  Output: {output_path.absolute()}\n")
@@ -165,12 +264,14 @@ def process_transcripts(input_dir, output_dir):
         print(f"  File saltati: {skipped}")
     print(f"  Video unici: {len(videos)}\n")
 
+    # === CLASSIFICAZIONE ===
     catalog = []
     directors_count = Counter()
     yearly_count = Counter()
     category_count = Counter()
     yearly_transcripts = defaultdict(dict)
     total_words = 0
+    films_mentioned = Counter()  # film -> count (from Patreon titles)
 
     for yt_id, video in sorted(videos.items(), key=lambda x: x[1].get("date") or "0000"):
         cat_id, cat_label = classify_video(video["title"])
@@ -195,6 +296,11 @@ def process_transcripts(input_dir, output_dir):
 
         yearly_transcripts[year or 0][yt_id] = text
 
+        # Estrai info film per Patreon
+        film_title, film_year = extract_film_info(video["title"])
+        if film_title:
+            films_mentioned[film_title] += 1
+
         catalog.append({
             "id": yt_id,
             "d": video["date"],
@@ -208,7 +314,7 @@ def process_transcripts(input_dir, output_dir):
 
     # === OUTPUT ===
 
-    # 1. INDEX (lightweight catalog, no text)
+    # 1. INDEX
     (output_path / "index.json").write_text(
         json.dumps({"total": len(catalog), "catalog": catalog},
                    ensure_ascii=False, separators=(',', ':')),
@@ -217,7 +323,7 @@ def process_transcripts(input_dir, output_dir):
     idx_mb = (output_path / "index.json").stat().st_size / 1024 / 1024
     print(f"  [OK] index.json ({idx_mb:.1f} MB)")
 
-    # 2. TRANSCRIPTS BY YEAR (one file per year)
+    # 2. TRANSCRIPTS BY YEAR
     transcript_sizes = {}
     for year, transcripts in sorted(yearly_transcripts.items()):
         fname = f"transcripts_{year}.json"
@@ -265,6 +371,14 @@ def process_transcripts(input_dir, output_dir):
     )
     print(f"  [OK] directors.json — {len(directors_list)} registi")
 
+    # 5. FILMS (from Patreon titles)
+    films_data = [{"title": f, "count": c} for f, c in films_mentioned.most_common(300) if c >= 1]
+    (output_path / "films.json").write_text(
+        json.dumps({"films": films_data}, ensure_ascii=False, indent=2),
+        encoding='utf-8'
+    )
+    print(f"  [OK] films.json — {len(films_data)} film estratti")
+
     # === REPORT ===
     total_mb = sum(f.stat().st_size for f in output_path.rglob("*") if f.is_file()) / 1024 / 1024
     file_count = sum(1 for _ in output_path.rglob('*') if _.is_file())
@@ -275,28 +389,41 @@ def process_transcripts(input_dir, output_dir):
     print(f"\n  Video totali:         {len(catalog)}")
     print(f"  Parole totali:        {total_words:,}")
     print(f"  Registi identificati: {len(directors_count)}")
-    print(f"  Categorie:            {len(category_count)}")
-    print(f"\n  DIMENSIONE OUTPUT:    {total_mb:.1f} MB")
+    print(f"  Film estratti:        {len(films_data)}")
+    print(f"  DIMENSIONE OUTPUT:    {total_mb:.1f} MB")
     print(f"  FILE GENERATI:        {file_count}")
-    print(f"\n  Per anno:")
+
+    print(f"\n  CATEGORIE:")
+    for cat, count in category_count.most_common():
+        pct = count / len(catalog) * 100
+        bar = "█" * min(int(pct), 50)
+        print(f"    {cat:25s} {count:5d} ({pct:5.1f}%) {bar}")
+
+    altro_count = category_count.get("altro", 0)
+    if altro_count > 0:
+        print(f"\n  ⚠  {altro_count} video non classificati ('altro')")
+        altri = [v["t"] for v in catalog if v["c"] == "altro"]
+        for t in altri[:10]:
+            print(f"      → {t}")
+
+    print(f"\n  PER ANNO:")
     for year in sorted(yearly_count.keys()):
         count = yearly_count[year]
         size = transcript_sizes.get(year, 0)
-        bar = "█" * min(count // 8, 40)
-        print(f"    {year}: {bar} {count} video ({size:.1f} MB)")
-    print(f"\n  Top categorie:")
-    for cat, count in category_count.most_common(10):
-        print(f"    {cat:25s} {count:4d}")
-    print(f"\n  Top registi:")
-    for d, c in directors_count.most_common(10):
-        print(f"    {d:25s} {c:4d}")
+        bar = "█" * min(count // 10, 40)
+        print(f"    {year}: {bar} {count} ({size:.1f} MB)")
+
+    print(f"\n  TOP 15 REGISTI:")
+    for d, c in directors_count.most_common(15):
+        print(f"    {d:30s} {c:4d}")
+
     print(f"\n{'='*60}\n")
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--input", "-i", default="data/transcripts")
-    parser.add_argument("--output", "-o", default="site/data")
+    parser.add_argument("--output", "-o", default="docs/data")
     args = parser.parse_args()
     if not Path(args.input).exists():
         print(f"\n  ERRORE: '{args.input}' non esiste!\n")
