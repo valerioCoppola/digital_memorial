@@ -1,39 +1,21 @@
 #!/usr/bin/env python3
 """
 ═══════════════════════════════════════════════════════════════
-  FEDERICO FRUSCIANTE MEMORIAL — Build Pipeline
-  Processa tutte le trascrizioni e genera i dati per il sito
+  FEDERICO FRUSCIANTE MEMORIAL — Build Pipeline v2 (Ottimizzato)
+  Genera file compatti raggruppati per anno
 ═══════════════════════════════════════════════════════════════
-
-USO:
-  python build_index.py --input data/transcripts --output site/data
-
-Questo script:
-  1. Scansiona tutti i file .json e .txt nella cartella trascrizioni
-  2. Estrae data, YouTube ID, titolo, categoria dal nome file
-  3. Legge il contenuto di ogni trascrizione
-  4. Genera un indice master (index.json) per il catalogo
-  5. Genera file individuali per ogni trascrizione (per caricamento lazy)
-  6. Genera statistiche e mappe concettuali automatiche
-  7. Genera la lista registi, film citati, e connessioni
 """
 
 import os
 import re
 import json
 import argparse
-import hashlib
+import shutil
 from pathlib import Path
 from collections import defaultdict, Counter
 from datetime import datetime
 
-
-# ═══════════════════════════════════════════════════════════
-# CONFIGURAZIONE CATEGORIE
-# ═══════════════════════════════════════════════════════════
-
 CATEGORY_RULES = [
-    # (pattern nel titolo, categoria_id, etichetta)
     (r"Le Monografie", "monografie", "Le Monografie"),
     (r"Le Recensioni.*Meglio e Peggio", "recensioni_annuali", "Meglio e Peggio"),
     (r"Le Recensioni", "recensioni", "Le Recensioni"),
@@ -49,7 +31,6 @@ CATEGORY_RULES = [
     (r"Live|Diretta", "live", "Live & Dirette"),
 ]
 
-# Registi noti per il riconoscimento automatico nelle monografie
 KNOWN_DIRECTORS = [
     "Woody Allen", "Joe Dante", "George A. Romero", "James Cameron",
     "Dario Argento", "John Carpenter", "David Cronenberg", "Lucio Fulci",
@@ -68,7 +49,6 @@ KNOWN_DIRECTORS = [
     "Sergio Martino", "Pupi Avati", "Michele Soavi",
 ]
 
-# Generi per le connessioni
 DIRECTOR_GENRES = {
     "Dario Argento": ["Horror", "Giallo", "Italian"],
     "Lucio Fulci": ["Horror", "Giallo", "Italian"],
@@ -97,53 +77,24 @@ DIRECTOR_GENRES = {
 }
 
 
-# ═══════════════════════════════════════════════════════════
-# PARSING DEI NOMI FILE
-# ═══════════════════════════════════════════════════════════
-
 def parse_filename(filename):
-    """
-    Estrae informazioni dal nome file.
-    Pattern: YYYYMMDD_YouTubeID_Titolo.ext
-    Esempio: 20141023_WZVnQNsfQe4_Le Monografie di Frusciante - Woody Allen - parte 1.json
-    """
     name = Path(filename).stem
     ext = Path(filename).suffix.lower()
-
-    # Pattern principale: data_id_titolo
     match = re.match(r'^(\d{8})_([A-Za-z0-9_\-]+?)_(.+)$', name)
     if not match:
-        # Fallback: prova senza data
         match2 = re.match(r'^([A-Za-z0-9_\-]+?)_(.+)$', name)
         if match2:
-            return {
-                "date": None,
-                "youtube_id": match2.group(1),
-                "title": match2.group(2).strip(),
-                "ext": ext,
-            }
+            return {"date": None, "youtube_id": match2.group(1), "title": match2.group(2).strip(), "ext": ext}
         return None
-
     date_str = match.group(1)
-    yt_id = match.group(2)
-    title = match.group(3).strip()
-
-    # Parsa la data
     try:
         date = datetime.strptime(date_str, "%Y%m%d").strftime("%Y-%m-%d")
     except ValueError:
         date = None
-
-    return {
-        "date": date,
-        "youtube_id": yt_id,
-        "title": title,
-        "ext": ext,
-    }
+    return {"date": date, "youtube_id": match.group(2), "title": match.group(3).strip(), "ext": ext}
 
 
 def classify_video(title):
-    """Classifica un video in base al titolo."""
     for pattern, cat_id, cat_label in CATEGORY_RULES:
         if re.search(pattern, title, re.IGNORECASE):
             return cat_id, cat_label
@@ -151,388 +102,204 @@ def classify_video(title):
 
 
 def extract_director(title):
-    """Estrae il nome del regista dal titolo (per le monografie)."""
-    # Cerca direttamente nei registi noti
     for director in KNOWN_DIRECTORS:
         if director.lower() in title.lower():
             return director
-
-    # Prova a estrarre dopo " - " nelle monografie
-    if "monografie" in title.lower() or "monografia" in title.lower():
+    if "monografi" in title.lower():
         parts = title.split(" - ")
         if len(parts) >= 2:
-            # L'ultima parte (o la penultima se c'è "parte X") è spesso il regista
             candidate = parts[-1].strip()
             if re.match(r'^parte \d+$', candidate, re.IGNORECASE) and len(parts) >= 3:
                 candidate = parts[-2].strip()
-            # Pulisci
             candidate = re.sub(r'\s*parte\s*\d+\s*$', '', candidate, flags=re.IGNORECASE).strip()
             if candidate and len(candidate) > 2:
                 return candidate
-
     return None
 
 
-def extract_films_from_text(text):
-    """
-    Prova ad estrarre titoli di film dal testo della trascrizione.
-    Euristica: cerca pattern comuni come titoli tra virgolette o dopo parole chiave.
-    """
-    films = set()
-
-    # Film tra virgolette
-    quoted = re.findall(r'[""«]([^""»]{3,60})[""»]', text)
-    for q in quoted:
-        # Filtra cose che non sembrano titoli di film
-        if not re.search(r'^(https?|www\.|@|#)', q) and len(q.split()) <= 8:
-            films.add(q.strip())
-
-    return list(films)[:50]  # Max 50 per video
-
-
-# ═══════════════════════════════════════════════════════════
-# PROCESSING PRINCIPALE
-# ═══════════════════════════════════════════════════════════
-
 def process_transcripts(input_dir, output_dir):
-    """Processa tutte le trascrizioni e genera i file per il sito."""
-
     input_path = Path(input_dir)
     output_path = Path(output_dir)
 
-    # Crea directory di output
+    if output_path.exists():
+        shutil.rmtree(output_path)
     output_path.mkdir(parents=True, exist_ok=True)
-    (output_path / "transcripts").mkdir(exist_ok=True)
 
-    print(f"\n{'═' * 60}")
-    print(f"  FEDERICO FRUSCIANTE MEMORIAL — Build Pipeline")
-    print(f"{'═' * 60}")
+    print(f"\n{'='*60}")
+    print(f"  FEDERICO FRUSCIANTE MEMORIAL — Build v2")
+    print(f"{'='*60}")
     print(f"\n  Input:  {input_path.absolute()}")
     print(f"  Output: {output_path.absolute()}\n")
 
-    # Raccogli tutti i file
-    all_files = sorted(input_path.rglob("*"))
-    txt_files = [f for f in all_files if f.suffix.lower() == '.txt']
-    json_files = [f for f in all_files if f.suffix.lower() == '.json']
+    valid_files = sorted([f for f in input_path.rglob("*") if f.suffix.lower() in ('.txt', '.json')])
+    print(f"  File trovati: {len(valid_files)}")
 
-    print(f"  Trovati {len(txt_files)} file .txt")
-    print(f"  Trovati {len(json_files)} file .json")
-    print()
+    videos = {}
+    skipped = 0
 
-    # Raggruppa per YouTube ID
-    videos = {}  # yt_id -> { info... }
-
-    # Prima passa: raccogli metadati da tutti i file
-    for filepath in all_files:
-        if filepath.suffix.lower() not in ('.txt', '.json'):
-            continue
-
+    for filepath in valid_files:
         parsed = parse_filename(filepath.name)
         if not parsed:
-            print(f"  ⚠ Non riesco a parsare: {filepath.name}")
+            skipped += 1
             continue
 
         yt_id = parsed["youtube_id"]
-
         if yt_id not in videos:
-            videos[yt_id] = {
-                "id": yt_id,
-                "date": parsed["date"],
-                "title": parsed["title"],
-                "category": None,
-                "category_label": None,
-                "director": None,
-                "transcript_text": None,
-                "metadata_json": None,
-                "films_mentioned": [],
-                "year": None,
-                "month": None,
-            }
+            videos[yt_id] = {"id": yt_id, "date": parsed["date"], "title": parsed["title"], "text": None}
 
-        # Aggiorna info
         if parsed["date"] and not videos[yt_id]["date"]:
             videos[yt_id]["date"] = parsed["date"]
 
-        # Leggi contenuto
         try:
             content = filepath.read_text(encoding='utf-8')
         except UnicodeDecodeError:
             try:
                 content = filepath.read_text(encoding='latin-1')
             except Exception:
-                print(f"  ⚠ Errore lettura: {filepath.name}")
+                skipped += 1
                 continue
 
         if parsed["ext"] == ".txt":
-            videos[yt_id]["transcript_text"] = content
-        elif parsed["ext"] == ".json":
-            try:
-                videos[yt_id]["metadata_json"] = json.loads(content)
-            except json.JSONDecodeError:
-                # Potrebbe essere testo raw salvato come .json
-                videos[yt_id]["metadata_json"] = {"raw": content}
+            videos[yt_id]["text"] = content
 
-    print(f"  Video unici trovati: {len(videos)}\n")
+    if skipped:
+        print(f"  File saltati: {skipped}")
+    print(f"  Video unici: {len(videos)}\n")
 
-    # Seconda passa: classifica e arricchisci
-    stats = defaultdict(int)
+    catalog = []
     directors_count = Counter()
     yearly_count = Counter()
     category_count = Counter()
-    all_films = Counter()
+    yearly_transcripts = defaultdict(dict)
+    total_words = 0
 
-    catalog = []
-
-    for yt_id, video in sorted(videos.items(), key=lambda x: x[1].get("date") or ""):
-        # Classifica
+    for yt_id, video in sorted(videos.items(), key=lambda x: x[1].get("date") or "0000"):
         cat_id, cat_label = classify_video(video["title"])
-        video["category"] = cat_id
-        video["category_label"] = cat_label
-        category_count[cat_id] += 1
+        director = extract_director(video["title"])
 
-        # Estrai anno/mese
+        year = None
         if video["date"]:
             try:
                 dt = datetime.strptime(video["date"], "%Y-%m-%d")
-                video["year"] = dt.year
-                video["month"] = dt.month
-                yearly_count[dt.year] += 1
+                year = dt.year
+                yearly_count[year] += 1
             except ValueError:
                 pass
 
-        # Estrai regista (per monografie)
-        director = extract_director(video["title"])
+        category_count[cat_id] += 1
         if director:
-            video["director"] = director
             directors_count[director] += 1
 
-        # Estrai film menzionati dal testo
-        if video["transcript_text"]:
-            video["films_mentioned"] = extract_films_from_text(video["transcript_text"])
-            for film in video["films_mentioned"]:
-                all_films[film] += 1
+        text = video["text"] or ""
+        wc = len(text.split()) if text else 0
+        total_words += wc
 
-        # Calcola lunghezza trascrizione
-        text_len = len(video["transcript_text"]) if video["transcript_text"] else 0
-        word_count = len(video["transcript_text"].split()) if video["transcript_text"] else 0
+        yearly_transcripts[year or 0][yt_id] = text
 
-        # Salva trascrizione individuale
-        transcript_data = {
+        catalog.append({
             "id": yt_id,
-            "title": video["title"],
-            "date": video["date"],
-            "category": cat_id,
-            "director": video["director"],
-            "text": video["transcript_text"] or "",
-            "metadata": video["metadata_json"],
-            "films_mentioned": video["films_mentioned"],
-            "word_count": word_count,
-        }
-
-        transcript_file = output_path / "transcripts" / f"{yt_id}.json"
-        transcript_file.write_text(
-            json.dumps(transcript_data, ensure_ascii=False, indent=None),
-            encoding='utf-8'
-        )
-
-        # Entry per il catalogo (senza testo completo)
-        catalog_entry = {
-            "id": yt_id,
-            "date": video["date"],
-            "title": video["title"],
-            "category": cat_id,
-            "category_label": cat_label,
-            "year": video["year"],
-            "month": video["month"],
-            "director": video["director"],
-            "word_count": word_count,
-            "char_count": text_len,
-            "has_transcript": bool(video["transcript_text"]),
-            "has_metadata": bool(video["metadata_json"]),
-            "films_count": len(video["films_mentioned"]),
-        }
-        catalog.append(catalog_entry)
-
-        stats["total"] += 1
-        if video["transcript_text"]:
-            stats["with_transcript"] += 1
-        if video["metadata_json"]:
-            stats["with_metadata"] += 1
-
-    # ═══════════════════════════════════════════════════════
-    # GENERA FILE DI OUTPUT
-    # ═══════════════════════════════════════════════════════
-
-    # 1. CATALOGO PRINCIPALE (index.json)
-    index_data = {
-        "version": "1.0",
-        "generated": datetime.now().isoformat(),
-        "total_videos": len(catalog),
-        "catalog": catalog,
-    }
-
-    (output_path / "index.json").write_text(
-        json.dumps(index_data, ensure_ascii=False, indent=2),
-        encoding='utf-8'
-    )
-    print(f"  ✓ index.json — {len(catalog)} video indicizzati")
-
-    # 2. STATISTICHE (stats.json)
-    stats_data = {
-        "total_videos": stats["total"],
-        "with_transcript": stats["with_transcript"],
-        "with_metadata": stats["with_metadata"],
-        "years_covered": sorted(yearly_count.keys()),
-        "yearly_distribution": dict(sorted(yearly_count.items())),
-        "category_distribution": dict(category_count.most_common()),
-        "total_words": sum(v.get("transcript_text", "") and len(v.get("transcript_text", "").split()) or 0 for v in videos.values()),
-    }
-
-    (output_path / "stats.json").write_text(
-        json.dumps(stats_data, ensure_ascii=False, indent=2),
-        encoding='utf-8'
-    )
-    print(f"  ✓ stats.json — statistiche generali")
-
-    # 3. REGISTI & MAPPA CONCETTUALE (directors.json)
-    directors_data = {
-        "directors": [],
-        "genre_connections": {},
-    }
-
-    for director, count in directors_count.most_common():
-        genres = DIRECTOR_GENRES.get(director, ["Non classificato"])
-        # Trova i video dedicati
-        director_videos = [
-            {"id": v["id"], "title": v["title"], "date": v["date"]}
-            for v in videos.values()
-            if v["director"] == director
-        ]
-        directors_data["directors"].append({
-            "name": director,
-            "video_count": count,
-            "genres": genres,
-            "videos": director_videos,
+            "d": video["date"],
+            "t": video["title"],
+            "c": cat_id,
+            "cl": cat_label,
+            "y": year,
+            "dir": director,
+            "wc": wc,
         })
 
-    # Connessioni per genere
-    genre_to_directors = defaultdict(list)
-    for d in directors_data["directors"]:
+    # === OUTPUT ===
+
+    # 1. INDEX (lightweight catalog, no text)
+    (output_path / "index.json").write_text(
+        json.dumps({"total": len(catalog), "catalog": catalog},
+                   ensure_ascii=False, separators=(',', ':')),
+        encoding='utf-8'
+    )
+    idx_mb = (output_path / "index.json").stat().st_size / 1024 / 1024
+    print(f"  [OK] index.json ({idx_mb:.1f} MB)")
+
+    # 2. TRANSCRIPTS BY YEAR (one file per year)
+    transcript_sizes = {}
+    for year, transcripts in sorted(yearly_transcripts.items()):
+        fname = f"transcripts_{year}.json"
+        fpath = output_path / fname
+        fpath.write_text(
+            json.dumps(transcripts, ensure_ascii=False, separators=(',', ':')),
+            encoding='utf-8'
+        )
+        size_mb = fpath.stat().st_size / 1024 / 1024
+        transcript_sizes[year] = size_mb
+        print(f"  [OK] {fname} ({size_mb:.1f} MB) — {len(transcripts)} video")
+
+    # 3. STATS
+    stats = {
+        "total_videos": len(catalog),
+        "total_words": total_words,
+        "years_covered": sorted([y for y in yearly_count.keys()]),
+        "yearly_distribution": dict(sorted(yearly_count.items())),
+        "category_distribution": dict(category_count.most_common()),
+        "transcript_files": {str(y): f"transcripts_{y}.json" for y in sorted(yearly_transcripts.keys())},
+    }
+    (output_path / "stats.json").write_text(
+        json.dumps(stats, ensure_ascii=False, indent=2), encoding='utf-8'
+    )
+    print(f"  [OK] stats.json")
+
+    # 4. DIRECTORS
+    directors_list = []
+    for director, count in directors_count.most_common():
+        genres = DIRECTOR_GENRES.get(director, ["Non classificato"])
+        dvids = [{"id": v["id"], "t": v["title"], "d": v["date"]}
+                 for v in videos.values() if extract_director(v["title"]) == director]
+        directors_list.append({"name": director, "count": count, "genres": genres, "videos": dvids})
+
+    genre_to_dirs = defaultdict(list)
+    for d in directors_list:
         for g in d["genres"]:
-            genre_to_directors[g].append(d["name"])
-    directors_data["genre_connections"] = dict(genre_to_directors)
+            if d["name"] not in genre_to_dirs[g]:
+                genre_to_dirs[g].append(d["name"])
 
     (output_path / "directors.json").write_text(
-        json.dumps(directors_data, ensure_ascii=False, indent=2),
+        json.dumps({"directors": directors_list, "genre_connections": dict(genre_to_dirs)},
+                   ensure_ascii=False, indent=2),
         encoding='utf-8'
     )
-    print(f"  ✓ directors.json — {len(directors_count)} registi mappati")
+    print(f"  [OK] directors.json — {len(directors_list)} registi")
 
-    # 4. FILM PIÙ CITATI (films.json)
-    films_data = {
-        "most_mentioned": [
-            {"title": film, "mentions": count}
-            for film, count in all_films.most_common(200)
-            if count >= 2  # Solo film citati almeno 2 volte
-        ]
-    }
+    # === REPORT ===
+    total_mb = sum(f.stat().st_size for f in output_path.rglob("*") if f.is_file()) / 1024 / 1024
+    file_count = sum(1 for _ in output_path.rglob('*') if _.is_file())
 
-    (output_path / "films.json").write_text(
-        json.dumps(films_data, ensure_ascii=False, indent=2),
-        encoding='utf-8'
-    )
-    print(f"  ✓ films.json — {len(films_data['most_mentioned'])} film più citati")
-
-    # 5. CATEGORIE (categories.json)
-    categories_info = {
-        cat_id: {
-            "id": cat_id,
-            "label": cat_label,
-            "count": category_count[cat_id],
-            "years": sorted(set(
-                v["year"] for v in videos.values()
-                if v["category"] == cat_id and v["year"]
-            )),
-        }
-        for _, cat_id, cat_label in CATEGORY_RULES
-        if category_count[cat_id] > 0
-    }
-    if category_count.get("altro", 0) > 0:
-        categories_info["altro"] = {
-            "id": "altro", "label": "Altro",
-            "count": category_count["altro"],
-            "years": sorted(set(
-                v["year"] for v in videos.values()
-                if v["category"] == "altro" and v["year"]
-            )),
-        }
-
-    (output_path / "categories.json").write_text(
-        json.dumps(categories_info, ensure_ascii=False, indent=2),
-        encoding='utf-8'
-    )
-    print(f"  ✓ categories.json — {len(categories_info)} categorie")
-
-    # ═══════════════════════════════════════════════════════
-    # REPORT FINALE
-    # ═══════════════════════════════════════════════════════
-
-    total_words = stats_data["total_words"]
-
-    print(f"\n{'═' * 60}")
+    print(f"\n{'='*60}")
     print(f"  BUILD COMPLETATA!")
-    print(f"{'═' * 60}")
-    print(f"\n  📊 RIEPILOGO:")
-    print(f"     Video totali:        {stats['total']}")
-    print(f"     Con trascrizione:    {stats['with_transcript']}")
-    print(f"     Con metadati JSON:   {stats['with_metadata']}")
-    print(f"     Parole totali:       {total_words:,}")
-    print(f"     Registi identificati: {len(directors_count)}")
-    print(f"     Film menzionati:     {len(all_films)}")
-    print(f"\n  📁 FILE GENERATI in {output_path}:")
-    print(f"     index.json           — catalogo completo")
-    print(f"     stats.json           — statistiche")
-    print(f"     directors.json       — mappa registi")
-    print(f"     films.json           — film più citati")
-    print(f"     categories.json      — categorie")
-    print(f"     transcripts/         — {stats['total']} file individuali")
-    print(f"\n  📂 DISTRIBUZIONE PER ANNO:")
+    print(f"{'='*60}")
+    print(f"\n  Video totali:         {len(catalog)}")
+    print(f"  Parole totali:        {total_words:,}")
+    print(f"  Registi identificati: {len(directors_count)}")
+    print(f"  Categorie:            {len(category_count)}")
+    print(f"\n  DIMENSIONE OUTPUT:    {total_mb:.1f} MB")
+    print(f"  FILE GENERATI:        {file_count}")
+    print(f"\n  Per anno:")
     for year in sorted(yearly_count.keys()):
-        bar = "█" * (yearly_count[year] // 10) + "░" * max(0, 40 - yearly_count[year] // 10)
-        print(f"     {year}: {bar} {yearly_count[year]}")
-    print(f"\n  🎬 TOP 10 CATEGORIE:")
+        count = yearly_count[year]
+        size = transcript_sizes.get(year, 0)
+        bar = "█" * min(count // 8, 40)
+        print(f"    {year}: {bar} {count} video ({size:.1f} MB)")
+    print(f"\n  Top categorie:")
     for cat, count in category_count.most_common(10):
-        print(f"     {cat:25s} {count:4d} video")
-    print(f"\n  🎭 TOP 10 REGISTI:")
-    for director, count in directors_count.most_common(10):
-        print(f"     {director:25s} {count:4d} video")
-    print(f"\n{'═' * 60}\n")
+        print(f"    {cat:25s} {count:4d}")
+    print(f"\n  Top registi:")
+    for d, c in directors_count.most_common(10):
+        print(f"    {d:25s} {c:4d}")
+    print(f"\n{'='*60}\n")
 
-
-# ═══════════════════════════════════════════════════════════
-# ENTRY POINT
-# ═══════════════════════════════════════════════════════════
 
 if __name__ == "__main__":
-    parser = argparse.ArgumentParser(
-        description="Federico Frusciante Memorial — Build Pipeline"
-    )
-    parser.add_argument(
-        "--input", "-i",
-        default="data/transcripts",
-        help="Cartella con i file delle trascrizioni (default: data/transcripts)"
-    )
-    parser.add_argument(
-        "--output", "-o",
-        default="site/data",
-        help="Cartella di output per i dati del sito (default: site/data)"
-    )
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--input", "-i", default="data/transcripts")
+    parser.add_argument("--output", "-o", default="site/data")
     args = parser.parse_args()
-
     if not Path(args.input).exists():
-        print(f"\n  ❌ ERRORE: La cartella '{args.input}' non esiste!")
-        print(f"     Assicurati che le trascrizioni siano nella cartella corretta.")
-        print(f"     Uso: python build_index.py --input /percorso/alle/trascrizioni\n")
+        print(f"\n  ERRORE: '{args.input}' non esiste!\n")
         exit(1)
-
     process_transcripts(args.input, args.output)

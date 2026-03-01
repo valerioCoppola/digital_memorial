@@ -1,4 +1,4 @@
-data/transcripts/
+﻿data/transcripts/
 node_modules/
 __pycache__/
 *.pyc

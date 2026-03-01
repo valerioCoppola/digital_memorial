@@ -386,25 +386,25 @@ function ArchiveSection() {
   const categories = useMemo(() => {
     const cats = {};
     catalog.forEach(v => {
-      if (!cats[v.category]) cats[v.category] = { count: 0, label: v.category_label };
-      cats[v.category].count++;
+      if (!cats[v.c]) cats[v.c] = { count: 0, label: v.cl };
+      cats[v.c].count++;
     });
     return Object.entries(cats).sort((a, b) => b[1].count - a[1].count);
   }, [catalog]);
 
   const years = useMemo(() =>
-    [...new Set(catalog.map(v => v.year).filter(Boolean))].sort(),
+    [...new Set(catalog.map(v => v.y).filter(Boolean))].sort(),
     [catalog]
   );
 
   const filtered = useMemo(() => {
     return catalog.filter(v => {
-      if (selectedCat !== "all" && v.category !== selectedCat) return false;
-      if (selectedYear !== "all" && v.year !== parseInt(selectedYear)) return false;
+      if (selectedCat !== "all" && v.c !== selectedCat) return false;
+      if (selectedYear !== "all" && v.y !== parseInt(selectedYear)) return false;
       if (searchQuery) {
         const q = searchQuery.toLowerCase();
-        return v.title.toLowerCase().includes(q) ||
-          (v.director && v.director.toLowerCase().includes(q));
+        return v.t.toLowerCase().includes(q) ||
+          (v.dir && v.dir.toLowerCase().includes(q));
       }
       return true;
     });
@@ -416,6 +416,9 @@ function ArchiveSection() {
   // Reset page on filter change
   useEffect(() => { setPage(0); }, [selectedCat, selectedYear, searchQuery]);
 
+  // Cache dei file annuali già scaricati
+  const yearCacheRef = useRef({});
+
   const loadTranscript = useCallback(async (ytId) => {
     if (expandedVideo === ytId) {
       setExpandedVideo(null);
@@ -424,19 +427,28 @@ function ArchiveSection() {
     }
     setExpandedVideo(ytId);
     setLoadingTranscript(true);
+
+    // Trova l'anno del video dal catalogo
+    const video = catalog.find(v => v.id === ytId);
+    const year = video?.y || 0;
+
     try {
-      const r = await fetch(`${DATA_BASE_URL}/transcripts/${ytId}.json`);
-      if (r.ok) {
-        const data = await r.json();
-        setTranscript(data);
-      } else {
-        setTranscript({ text: "[Trascrizione non disponibile]" });
+      // Controlla cache
+      if (!yearCacheRef.current[year]) {
+        const r = await fetch(`${DATA_BASE_URL}/transcripts_${year}.json`);
+        if (r.ok) {
+          yearCacheRef.current[year] = await r.json();
+        } else {
+          yearCacheRef.current[year] = {};
+        }
       }
+      const text = yearCacheRef.current[year]?.[ytId] || "";
+      setTranscript({ text });
     } catch {
       setTranscript({ text: "[Errore nel caricamento]" });
     }
     setLoadingTranscript(false);
-  }, [expandedVideo]);
+  }, [expandedVideo, catalog]);
 
   if (loading) return <LoadingIndicator message="Caricamento archivio..." />;
   if (error) return <ErrorMessage message={error} />;
@@ -512,7 +524,7 @@ function ArchiveSection() {
       {/* Video list */}
       <div style={{ display: "flex", flexDirection: "column", gap: "3px" }}>
         {paged.map(video => {
-          const meta = CATEGORY_META[video.category] || CATEGORY_META.altro;
+          const meta = CATEGORY_META[video.c] || CATEGORY_META.altro;
           const isExpanded = expandedVideo === video.id;
 
           return (
@@ -530,27 +542,27 @@ function ArchiveSection() {
                 <span style={{
                   fontFamily: "'DM Mono', monospace", fontSize: "0.68rem",
                   color: "#444", minWidth: "76px",
-                }}>{video.date || "—"}</span>
+                }}>{video.d || "—"}</span>
                 <span style={{
                   fontSize: "0.68rem", padding: "2px 8px", borderRadius: "3px",
                   background: `${meta.color}12`, color: meta.color,
                   fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap",
-                }}>{meta.icon} {video.category_label}</span>
+                }}>{meta.icon} {video.cl}</span>
                 <span style={{
                   fontFamily: "'DM Sans', sans-serif", fontSize: "0.88rem",
                   color: "#ccc", flex: 1,
-                }}>{video.title}</span>
-                {video.director && (
+                }}>{video.t}</span>
+                {video.dir && (
                   <span style={{
                     fontFamily: "'DM Sans', sans-serif", fontSize: "0.7rem",
                     color: "#e8a94688", background: "#e8a94610",
                     padding: "2px 8px", borderRadius: "3px",
-                  }}>🎭 {video.director}</span>
+                  }}>🎭 {video.dir}</span>
                 )}
                 <span style={{
                   fontFamily: "'DM Mono', monospace", fontSize: "0.6rem",
                   color: "#333",
-                }}>{video.word_count ? `${(video.word_count / 1000).toFixed(1)}k parole` : ""}</span>
+                }}>{video.wc ? `${(video.wc / 1000).toFixed(1)}k parole` : ""}</span>
               </div>
 
               {/* Expanded: transcript content */}
@@ -576,27 +588,6 @@ function ArchiveSection() {
                       }}>
                         {transcript.text || "[Nessun testo disponibile]"}
                       </div>
-
-                      {/* Films mentioned */}
-                      {transcript.films_mentioned?.length > 0 && (
-                        <div style={{ marginTop: "12px" }}>
-                          <div style={{
-                            fontFamily: "'DM Sans'", fontSize: "0.7rem",
-                            color: "#555", marginBottom: "6px", textTransform: "uppercase",
-                            letterSpacing: "0.1em",
-                          }}>Film citati:</div>
-                          <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" }}>
-                            {transcript.films_mentioned.map((film, i) => (
-                              <span key={i} style={{
-                                fontFamily: "'DM Sans'", fontSize: "0.73rem",
-                                color: "#888", background: "#111",
-                                border: "1px solid #1a1a1a",
-                                padding: "3px 8px", borderRadius: "3px",
-                              }}>{film}</span>
-                            ))}
-                          </div>
-                        </div>
-                      )}
 
                       {/* Actions */}
                       <div style={{
