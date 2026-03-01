@@ -1,0 +1,49 @@
+{
+  "total_videos": 4534,
+  "with_transcript": 4534,
+  "with_metadata": 4534,
+  "years_covered": [
+    2014,
+    2015,
+    2016,
+    2017,
+    2018,
+    2019,
+    2020,
+    2021,
+    2022,
+    2023,
+    2024,
+    2025,
+    2026
+  ],
+  "yearly_distribution": {
+    "2014": 7,
+    "2015": 47,
+    "2016": 51,
+    "2017": 45,
+    "2018": 114,
+    "2019": 283,
+    "2020": 590,
+    "2021": 540,
+    "2022": 559,
+    "2023": 939,
+    "2024": 400,
+    "2025": 890,
+    "2026": 69
+  },
+  "category_distribution": {
+    "altro": 4256,
+    "consigli": 108,
+    "monografie": 60,
+    "musicali": 30,
+    "speciali": 29,
+    "live": 25,
+    "worst": 10,
+    "reboot": 8,
+    "recensioni_annuali": 3,
+    "interviste": 3,
+    "scifi": 2
+  },
+  "total_words": 10334668
+}
